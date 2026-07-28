@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import config from './config.js';
 import saludRutas from './rutas/salud.rutas.js';
 import infoRutas from './rutas/info.rutas.js';
+import laboratoriosRutas from './rutas/laboratorios.rutas.js';
 import { rutaNoEncontrada, manejadorErrores } from './middleware/manejadorErrores.js';
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(express.json());
 
 app.use('/api/v1/salud', saludRutas);
 app.use('/api/v1/info', infoRutas);
+app.use('/api/v1/laboratorios', laboratoriosRutas);
 
 app.use(rutaNoEncontrada);
 app.use(manejadorErrores);

@@ -110,3 +110,5 @@ npm run migrar:crear nombre-de-la-migracion   # crea una nueva
 |---|---|---|---|
 | GET | `/api/v1/salud` | Estado de la API y conectividad a PostgreSQL | Público |
 | GET | `/api/v1/info` | Información de la plataforma leída de la base de datos | Público |
+| GET | `/api/v1/laboratorios` | Lista de laboratorios activos (vitrina pública) | Público |
+| GET | `/api/v1/laboratorios/:id` | Detalle de un laboratorio activo | Público |
