@@ -6,11 +6,16 @@ export function rutaNoEncontrada(req, res) {
 
 // Manejador de errores central: la API nunca filtra trazas internas en producción.
 export function manejadorErrores(error, req, res, next) {
-  console.error(`[error] ${req.method} ${req.originalUrl}:`, error);
-
   if (res.headersSent) {
     return next(error);
   }
+
+  // Errores de dominio (ErrorHttp): esperados, con código y mensaje seguros.
+  if (typeof error.codigo === 'number') {
+    return res.status(error.codigo).json({ error: error.message });
+  }
+
+  console.error(`[error] ${req.method} ${req.originalUrl}:`, error);
 
   res.status(500).json({
     error: 'Error interno del servidor',
