@@ -1,0 +1,135 @@
+/* Mobile-first: estilos base para pantallas pequeñas */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light dark;
+  --fondo: #f6f7f9;
+  --texto: #1c2430;
+  --texto-suave: #5b6b7d;
+  --tarjeta: #ffffff;
+  --borde: #dde3ea;
+  --acento: #0f766e;
+  --ok: #15803d;
+  --falla: #b91c1c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #10161d;
+    --texto: #e8edf2;
+    --texto-suave: #9db0c2;
+    --tarjeta: #1a232e;
+    --borde: #2c3947;
+    --acento: #2dd4bf;
+    --ok: #4ade80;
+    --falla: #f87171;
+  }
+}
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+  line-height: 1.6;
+}
+
+.contenedor {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.etiqueta {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--acento);
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--texto-suave);
+}
+
+.tarjeta {
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+
+.aviso {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: var(--tarjeta);
+  border: 1px dashed var(--borde);
+  color: var(--texto-suave);
+}
+
+.aviso-error {
+  color: var(--falla);
+  border-color: var(--falla);
+}
+
+.estado-lista {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.estado-lista li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--borde);
+  padding-bottom: 0.5rem;
+}
+
+.estado-lista li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.estado-lista span {
+  color: var(--texto-suave);
+}
+
+.ok {
+  color: var(--ok);
+}
+
+.falla {
+  color: var(--falla);
+}
+
+footer p {
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+  text-align: center;
+}
+
+/* Pantallas medianas en adelante */
+@media (min-width: 48rem) {
+  .contenedor {
+    padding-top: 3rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+}
