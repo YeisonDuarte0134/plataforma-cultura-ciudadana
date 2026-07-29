@@ -112,3 +112,16 @@ npm run migrar:crear nombre-de-la-migracion   # crea una nueva
 | GET | `/api/v1/info` | Información de la plataforma leída de la base de datos | Público |
 | GET | `/api/v1/laboratorios` | Lista de laboratorios activos (vitrina pública) | Público |
 | GET | `/api/v1/laboratorios/:id` | Detalle de un laboratorio activo | Público |
+
+## Créditos de imágenes
+
+Las fotografías de los laboratorios semilla provienen de [Wikimedia Commons](https://commons.wikimedia.org) y se usan conforme a sus licencias (alojadas en Firebase Storage del proyecto):
+
+| Laboratorio | Obra original | Autor | Licencia |
+|---|---|---|---|
+| Parque de los Niños | [Parque San Pío de Bucaramanga juegos](https://commons.wikimedia.org/wiki/File:Parque_San_Pio_de_Bucaramanga_juegos.JPG) | Angel Paez | [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) |
+| Café Madrid | [Tardes de Bucaramanga desde el parque El Bosque](https://commons.wikimedia.org/wiki/File:Tardes_de_bucaramanga_desde_el_parque_el_bosque.jpg) | Valery Susej Parra | [CC0](https://creativecommons.org/publicdomain/zero/1.0/) |
+| Parque García Rovira | [Parque García Rovira 1910-1920](https://commons.wikimedia.org/wiki/File:Parque_Garcia_Rovira_1910-1920.jpg) | Quintilio Gavassa Mibelli | Dominio público |
+| Cerro del Santísimo | [Jesus Statue, Floridablanca, Santander, Colombia](https://commons.wikimedia.org/wiki/File:Jesus_Statue,_Floridablanca,_Santander,_Colombia.jpg) | Tisquesusa | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+
+Las imágenes fueron redimensionadas y optimizadas para la web. Para subirlas a Firebase Storage se usa `server/scripts/subir-imagenes-laboratorios.js` (requiere las variables `GOOGLE_APPLICATION_CREDENTIALS` y `FIREBASE_STORAGE_BUCKET`).
