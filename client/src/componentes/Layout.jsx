@@ -18,12 +18,19 @@ export default function Layout() {
 
           <nav className="sesion" aria-label="Sesión">
             {cargando ? null : perfil ? (
-              <NavLink to="/perfil" className="sesion-perfil">
-                <span className="sesion-avatar" aria-hidden="true">
-                  {perfil.avatar ?? perfil.alias.charAt(0)}
-                </span>
-                <span className="sesion-alias">{perfil.alias}</span>
-              </NavLink>
+              <>
+                {['gestor', 'administrador'].includes(perfil.rol) && (
+                  <NavLink to="/admin/laboratorios" className="sesion-enlace">
+                    Panel
+                  </NavLink>
+                )}
+                <NavLink to="/perfil" className="sesion-perfil">
+                  <span className="sesion-avatar" aria-hidden="true">
+                    {perfil.avatar ?? perfil.alias.charAt(0)}
+                  </span>
+                  <span className="sesion-alias">{perfil.alias}</span>
+                </NavLink>
+              </>
             ) : usuario ? (
               <NavLink to="/registro" className="boton boton-pequeno">
                 Completar registro
