@@ -8,14 +8,21 @@ export class ErrorApi extends Error {
   }
 }
 
-async function obtenerJson(ruta) {
-  const respuesta = await fetch(`${API_URL}${ruta}`);
+async function peticion(ruta, { token, metodo = 'GET', cuerpo } = {}) {
+  const respuesta = await fetch(`${API_URL}${ruta}`, {
+    method: metodo,
+    headers: {
+      ...(cuerpo && { 'Content-Type': 'application/json' }),
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+    ...(cuerpo && { body: JSON.stringify(cuerpo) }),
+  });
 
   if (!respuesta.ok) {
     let mensaje = `La API respondió ${respuesta.status}`;
     try {
-      const cuerpo = await respuesta.json();
-      if (cuerpo?.error) mensaje = cuerpo.error;
+      const datos = await respuesta.json();
+      if (datos?.error) mensaje = datos.error;
     } catch {
       // El cuerpo no era JSON; se conserva el mensaje genérico.
     }
@@ -26,13 +33,29 @@ async function obtenerJson(ruta) {
 }
 
 export function obtenerSalud() {
-  return obtenerJson('/api/v1/salud');
+  return peticion('/api/v1/salud');
 }
 
 export function obtenerLaboratorios() {
-  return obtenerJson('/api/v1/laboratorios');
+  return peticion('/api/v1/laboratorios');
 }
 
 export function obtenerLaboratorio(id) {
-  return obtenerJson(`/api/v1/laboratorios/${id}`);
+  return peticion(`/api/v1/laboratorios/${id}`);
+}
+
+export function obtenerOpcionesRegistro() {
+  return peticion('/api/v1/usuarios/opciones-registro');
+}
+
+export function registrarPerfil(token, datos) {
+  return peticion('/api/v1/usuarios/registro', { token, metodo: 'POST', cuerpo: datos });
+}
+
+export function obtenerMiPerfil(token) {
+  return peticion('/api/v1/usuarios/me', { token });
+}
+
+export function actualizarMiPerfil(token, datos) {
+  return peticion('/api/v1/usuarios/me', { token, metodo: 'PATCH', cuerpo: datos });
 }

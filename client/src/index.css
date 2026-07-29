@@ -55,6 +55,56 @@ body {
   z-index: 10;
 }
 
+.cabecera-contenido {
+  max-width: 64rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sesion {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sesion-enlace {
+  color: var(--texto);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.sesion-perfil {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.sesion-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--acento-suave);
+  font-size: 1.1rem;
+}
+
+.sesion-alias {
+  max-width: 9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .marca {
   display: inline-flex;
   align-items: center;
@@ -253,6 +303,175 @@ body {
 
 .texto-suave {
   color: var(--texto-suave);
+}
+
+/* Formularios (registro, sesión, perfil) */
+.formulario-tarjeta {
+  max-width: 28rem;
+  margin: 0 auto;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 0.9rem;
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formulario-tarjeta h1 {
+  font-size: 1.35rem;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+}
+
+.campo input[type='text'],
+.campo input[type='email'],
+.campo input[type='password'],
+.campo input[type='tel'] {
+  font: inherit;
+  font-weight: 400;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.5rem;
+  background: var(--fondo);
+  color: var(--texto);
+}
+
+.campo input:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 1px;
+}
+
+.consentimiento {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-weight: 400;
+}
+
+.consentimiento input {
+  margin-top: 0.25rem;
+}
+
+.avatares legend {
+  margin-bottom: 0.4rem;
+}
+
+.avatares-grilla {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.avatar-opcion {
+  font-size: 1.3rem;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--borde);
+  background: var(--fondo);
+  cursor: pointer;
+}
+
+.avatar-activo {
+  border: 2px solid var(--acento);
+  background: var(--acento-suave);
+}
+
+.boton {
+  font: inherit;
+  font-weight: 700;
+  padding: 0.65rem 1.1rem;
+  border: none;
+  border-radius: 0.6rem;
+  background: var(--acento);
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+}
+
+.boton:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.boton-secundario {
+  background: transparent;
+  color: var(--falla);
+  border: 1px solid var(--falla);
+}
+
+.boton-pequeno {
+  font-size: 0.85rem;
+  padding: 0.45rem 0.8rem;
+}
+
+.aviso-ok {
+  color: var(--ok);
+  border-color: var(--ok);
+}
+
+.perfil-encabezado {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.perfil-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 50%;
+  background: var(--acento-suave);
+  font-size: 1.7rem;
+  flex-shrink: 0;
+}
+
+.separador {
+  border: none;
+  border-top: 1px solid var(--borde);
+}
+
+/* Documentos (política de datos) */
+.documento {
+  max-width: 44rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.documento h1 {
+  font-size: 1.5rem;
+}
+
+.documento h2 {
+  font-size: 1.05rem;
+  margin-top: 0.5rem;
+}
+
+.documento ul {
+  padding-left: 1.25rem;
+}
+
+a {
+  color: var(--acento);
 }
 
 /* Pantallas medianas en adelante */

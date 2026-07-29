@@ -112,6 +112,21 @@ npm run migrar:crear nombre-de-la-migracion   # crea una nueva
 | GET | `/api/v1/info` | Información de la plataforma leída de la base de datos | Público |
 | GET | `/api/v1/laboratorios` | Lista de laboratorios activos (vitrina pública) | Público |
 | GET | `/api/v1/laboratorios/:id` | Detalle de un laboratorio activo | Público |
+| GET | `/api/v1/usuarios/opciones-registro` | Versión del consentimiento y avatares permitidos | Público |
+| POST | `/api/v1/usuarios/registro` | Crea el perfil (exige consentimiento aceptado) | Token Firebase |
+| GET | `/api/v1/usuarios/me` | Perfil del usuario autenticado | Token Firebase |
+| PATCH | `/api/v1/usuarios/me` | Actualiza alias, avatar y teléfono | Token Firebase |
+
+Los endpoints protegidos esperan el encabezado `Authorization: Bearer <ID token de Firebase>`.
+
+## Pruebas automatizadas
+
+```sh
+cd server
+npm test
+```
+
+`npm test` crea la base `cultura_ciudadana_pruebas` (variable `DATABASE_URL_PRUEBAS`), le aplica las migraciones y ejecuta la suite de Jest + Supertest. Las pruebas de la Fase 3 cubren el control de acceso (401 sin token o con token inválido), el consentimiento obligatorio del registro, el perfil propio y el bloqueo de cuentas desactivadas.
 
 ## Créditos de imágenes
 
