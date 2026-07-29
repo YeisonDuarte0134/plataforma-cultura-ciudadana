@@ -29,6 +29,46 @@ export async function crearUsuario({
   return rows[0];
 }
 
+/* --- Operaciones de administración (Fase 4) --- */
+
+export async function buscarUsuarioPorId(id) {
+  const { rows } = await pool.query(
+    `SELECT ${COLUMNAS} FROM usuarios WHERE id = $1`,
+    [id]
+  );
+  return rows[0] ?? null;
+}
+
+export async function buscarUsuarios(texto, limite = 20) {
+  const patron = `%${texto}%`;
+  const { rows } = await pool.query(
+    `SELECT ${COLUMNAS} FROM usuarios
+      WHERE alias ILIKE $1 OR correo ILIKE $1
+      ORDER BY alias
+      LIMIT $2`,
+    [patron, limite]
+  );
+  return rows;
+}
+
+export async function cambiarEstadoUsuario(id, estado) {
+  const { rows } = await pool.query(
+    `UPDATE usuarios SET estado = $2, updated_at = current_timestamp
+      WHERE id = $1 RETURNING ${COLUMNAS}`,
+    [id, estado]
+  );
+  return rows[0] ?? null;
+}
+
+export async function cambiarRolUsuario(id, rol) {
+  const { rows } = await pool.query(
+    `UPDATE usuarios SET rol = $2, updated_at = current_timestamp
+      WHERE id = $1 RETURNING ${COLUMNAS}`,
+    [id, rol]
+  );
+  return rows[0] ?? null;
+}
+
 export async function actualizarUsuario(id, { alias, avatar, telefono }) {
   const { rows } = await pool.query(
     `UPDATE usuarios

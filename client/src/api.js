@@ -59,3 +59,52 @@ export function obtenerMiPerfil(token) {
 export function actualizarMiPerfil(token, datos) {
   return peticion('/api/v1/usuarios/me', { token, metodo: 'PATCH', cuerpo: datos });
 }
+
+/* --- Panel de administración (Fase 4) --- */
+
+export function obtenerLaboratoriosAdministrables(token) {
+  return peticion('/api/v1/laboratorios/mios', { token });
+}
+
+export function obtenerLaboratorioAdministrable(token, id) {
+  return peticion(`/api/v1/laboratorios/${id}/admin`, { token });
+}
+
+export function crearLaboratorio(token, datos) {
+  return peticion('/api/v1/laboratorios', { token, metodo: 'POST', cuerpo: datos });
+}
+
+export function editarLaboratorio(token, id, datos) {
+  return peticion(`/api/v1/laboratorios/${id}`, { token, metodo: 'PATCH', cuerpo: datos });
+}
+
+export function obtenerGestores(token, laboratorioId) {
+  return peticion(`/api/v1/laboratorios/${laboratorioId}/gestores`, { token });
+}
+
+export function asignarGestor(token, laboratorioId, usuarioId) {
+  return peticion(`/api/v1/laboratorios/${laboratorioId}/gestores`, {
+    token,
+    metodo: 'POST',
+    cuerpo: { usuarioId },
+  });
+}
+
+export function revocarGestor(token, laboratorioId, usuarioId) {
+  return peticion(`/api/v1/laboratorios/${laboratorioId}/gestores/${usuarioId}`, {
+    token,
+    metodo: 'DELETE',
+  });
+}
+
+export function buscarUsuarios(token, texto) {
+  return peticion(`/api/v1/usuarios?buscar=${encodeURIComponent(texto)}`, { token });
+}
+
+export function cambiarEstadoUsuario(token, id, estado) {
+  return peticion(`/api/v1/usuarios/${id}/estado`, {
+    token,
+    metodo: 'PATCH',
+    cuerpo: { estado },
+  });
+}
