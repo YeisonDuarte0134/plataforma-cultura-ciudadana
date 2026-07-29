@@ -4,6 +4,10 @@ import {
   VERSION_CONSENTIMIENTO,
   AVATARES_PERMITIDOS,
 } from '../servicios/usuarios.servicio.js';
+import {
+  buscarUsuariosAdmin,
+  cambiarEstado,
+} from '../servicios/administracion.servicio.js';
 
 export async function registrar(req, res, next) {
   try {
@@ -21,6 +25,24 @@ export function obtenerMiPerfil(req, res) {
 export async function actualizarMiPerfil(req, res, next) {
   try {
     res.json(await actualizarPerfil(req.perfil, req.body));
+  } catch (error) {
+    next(error);
+  }
+}
+
+/* --- Administración (solo admin) --- */
+
+export async function buscarUsuariosComoAdmin(req, res, next) {
+  try {
+    res.json(await buscarUsuariosAdmin(req.query.buscar));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function cambiarEstadoUsuario(req, res, next) {
+  try {
+    res.json(await cambiarEstado(req.perfil, req.params.id, req.body?.estado));
   } catch (error) {
     next(error);
   }

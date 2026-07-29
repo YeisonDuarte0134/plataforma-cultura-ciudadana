@@ -116,6 +116,23 @@ npm run migrar:crear nombre-de-la-migracion   # crea una nueva
 | POST | `/api/v1/usuarios/registro` | Crea el perfil (exige consentimiento aceptado) | Token Firebase |
 | GET | `/api/v1/usuarios/me` | Perfil del usuario autenticado | Token Firebase |
 | PATCH | `/api/v1/usuarios/me` | Actualiza alias, avatar y teléfono | Token Firebase |
+| GET | `/api/v1/laboratorios/mios` | Laboratorios administrables del usuario | Gestor / Admin |
+| GET | `/api/v1/laboratorios/:id/admin` | Detalle administrable (incluye inactivos) | Gestor asignado / Admin |
+| POST | `/api/v1/laboratorios` | Crea un laboratorio | Admin |
+| PATCH | `/api/v1/laboratorios/:id` | Edita un laboratorio (`activo` solo admin) | Gestor asignado / Admin |
+| GET/POST | `/api/v1/laboratorios/:id/gestores` | Lista / asigna gestores | Admin |
+| DELETE | `/api/v1/laboratorios/:id/gestores/:usuarioId` | Revoca un gestor | Admin |
+| GET | `/api/v1/usuarios?buscar=` | Busca usuarios por alias o correo | Admin |
+| PATCH | `/api/v1/usuarios/:id/estado` | Activa/desactiva una cuenta | Admin |
+
+### Primer administrador
+
+El primer administrador se promueve por consola (una sola vez):
+
+```sh
+cd server
+node scripts/promover-administrador.js correo@ejemplo.com
+```
 
 Los endpoints protegidos esperan el encabezado `Authorization: Bearer <ID token de Firebase>`.
 
