@@ -1,5 +1,8 @@
-import app from './app.js';
+import crearApp from './app.js';
 import config from './config.js';
+import { verificarIdTokenFirebase } from './firebase.js';
+
+const app = crearApp({ verificadorTokens: verificarIdTokenFirebase });
 
 app.listen(config.puerto, () => {
   console.log(

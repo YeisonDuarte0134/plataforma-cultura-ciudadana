@@ -9,7 +9,9 @@
     "start": "node src/index.js",
     "migrar": "node-pg-migrate up",
     "migrar:revertir": "node-pg-migrate down",
-    "migrar:crear": "node-pg-migrate create"
+    "migrar:crear": "node-pg-migrate create",
+    "pretest": "node scripts/preparar-bd-pruebas.js",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "engines": {
     "node": ">=20"
@@ -25,6 +27,12 @@
   },
   "allowScripts": {
     "@firebase/util@1.15.1": true,
-    "protobufjs@7.6.5": true
+    "protobufjs@7.6.5": true,
+    "unrs-resolver@1.12.2": true
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
   }
 }
