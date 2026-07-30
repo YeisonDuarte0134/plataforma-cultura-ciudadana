@@ -60,6 +60,61 @@ export function actualizarMiPerfil(token, datos) {
   return peticion('/api/v1/usuarios/me', { token, metodo: 'PATCH', cuerpo: datos });
 }
 
+/* --- Temáticas y actividades (Fase 5) --- */
+
+export function obtenerTematicas() {
+  return peticion('/api/v1/tematicas');
+}
+
+export function obtenerActividades(filtros = {}) {
+  const parametros = new URLSearchParams();
+  if (filtros.laboratorio) parametros.set('laboratorio', filtros.laboratorio);
+  if (filtros.tipo) parametros.set('tipo', filtros.tipo);
+  if (filtros.tematica) parametros.set('tematica', filtros.tematica);
+  const consulta = parametros.toString();
+  return peticion(`/api/v1/actividades${consulta ? `?${consulta}` : ''}`);
+}
+
+export function obtenerActividad(id) {
+  return peticion(`/api/v1/actividades/${id}`);
+}
+
+export function obtenerTodasLasTematicas(token) {
+  return peticion('/api/v1/tematicas/todas', { token });
+}
+
+export function crearTematica(token, datos) {
+  return peticion('/api/v1/tematicas', { token, metodo: 'POST', cuerpo: datos });
+}
+
+export function editarTematica(token, id, datos) {
+  return peticion(`/api/v1/tematicas/${id}`, { token, metodo: 'PATCH', cuerpo: datos });
+}
+
+export function obtenerActividadesDeLaboratorio(token, laboratorioId) {
+  return peticion(`/api/v1/actividades/admin?laboratorio=${laboratorioId}`, { token });
+}
+
+export function obtenerActividadAdministrable(token, id) {
+  return peticion(`/api/v1/actividades/${id}/admin`, { token });
+}
+
+export function crearActividad(token, datos) {
+  return peticion('/api/v1/actividades', { token, metodo: 'POST', cuerpo: datos });
+}
+
+export function editarActividad(token, id, datos) {
+  return peticion(`/api/v1/actividades/${id}`, { token, metodo: 'PATCH', cuerpo: datos });
+}
+
+export function cambiarEstadoActividad(token, id, estado) {
+  return peticion(`/api/v1/actividades/${id}/estado`, {
+    token,
+    metodo: 'PATCH',
+    cuerpo: { estado },
+  });
+}
+
 /* --- Panel de administración (Fase 4) --- */
 
 export function obtenerLaboratoriosAdministrables(token) {
