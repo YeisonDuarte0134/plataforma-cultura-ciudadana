@@ -29,7 +29,10 @@ export default function AdminLayout() {
       <nav className="admin-nav" aria-label="Secciones del panel">
         <NavLink to="/admin/laboratorios">Laboratorios</NavLink>
         {perfil.rol === 'administrador' && (
-          <NavLink to="/admin/usuarios">Usuarios</NavLink>
+          <>
+            <NavLink to="/admin/tematicas">Temáticas</NavLink>
+            <NavLink to="/admin/usuarios">Usuarios</NavLink>
+          </>
         )}
       </nav>
 

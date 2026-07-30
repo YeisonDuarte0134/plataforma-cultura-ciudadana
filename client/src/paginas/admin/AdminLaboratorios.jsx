@@ -75,6 +75,9 @@ export default function AdminLaboratorios() {
                     </span>
                   </td>
                   <td className="tabla-acciones">
+                    <Link to={`/admin/laboratorios/${lab.id}/actividades`} className="enlace-accion">
+                      Actividades
+                    </Link>
                     <Link to={`/admin/laboratorios/${lab.id}`} className="enlace-accion">
                       Editar
                     </Link>

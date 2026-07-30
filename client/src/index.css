@@ -448,6 +448,105 @@ body {
   border-top: 1px solid var(--borde);
 }
 
+/* Eventos y temáticas */
+.seccion-titulo {
+  font-size: 1.15rem;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.eventos-lista {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.evento-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 0.75rem;
+  padding: 1rem 1.1rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.evento-tarjeta:hover,
+.evento-tarjeta:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.evento-tarjeta h3 {
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.evento-dato {
+  font-size: 0.85rem;
+  color: var(--texto-suave);
+}
+
+.chip {
+  align-self: flex-start;
+  display: inline-block;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--acento-suave);
+  color: var(--acento);
+}
+
+.evento-detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 44rem;
+}
+
+.evento-detalle h1 {
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+.evento-datos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.evento-descripcion {
+  white-space: pre-line;
+}
+
+.insignia-neutra {
+  background: transparent;
+  border: 1px solid var(--borde);
+  color: var(--texto-suave);
+}
+
+.campo select {
+  font: inherit;
+  font-weight: 400;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.5rem;
+  background: var(--fondo);
+  color: var(--texto);
+}
+
+@media (min-width: 40rem) {
+  .eventos-lista {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 /* Panel administrativo */
 .admin {
   display: flex;
