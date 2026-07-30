@@ -7,6 +7,8 @@ import saludRutas from './rutas/salud.rutas.js';
 import infoRutas from './rutas/info.rutas.js';
 import crearLaboratoriosRutas from './rutas/laboratorios.rutas.js';
 import crearUsuariosRutas from './rutas/usuarios.rutas.js';
+import crearTematicasRutas from './rutas/tematicas.rutas.js';
+import crearActividadesRutas from './rutas/actividades.rutas.js';
 import { rutaNoEncontrada, manejadorErrores } from './middleware/manejadorErrores.js';
 
 /**
@@ -25,6 +27,8 @@ export default function crearApp({ verificadorTokens }) {
   app.use('/api/v1/salud', saludRutas);
   app.use('/api/v1/info', infoRutas);
   app.use('/api/v1/laboratorios', crearLaboratoriosRutas(verificarToken));
+  app.use('/api/v1/tematicas', crearTematicasRutas(verificarToken));
+  app.use('/api/v1/actividades', crearActividadesRutas(verificarToken));
   app.use('/api/v1/usuarios', crearUsuariosRutas(verificarToken));
 
   app.use(rutaNoEncontrada);
