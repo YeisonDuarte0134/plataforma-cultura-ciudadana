@@ -9,12 +9,22 @@ const config = {
   urlBaseDatos: process.env.DATABASE_URL,
   origenCors: origenCrudo.replace(/\/+$/, ''),
   entorno: process.env.NODE_ENV || 'development',
+  // Firma de los tokens de asistencia por QR (JWT propio del servidor).
+  secretoQr: process.env.QR_JWT_SECRETO,
 };
 
 if (!config.urlBaseDatos) {
   throw new Error(
     'Falta la variable de entorno DATABASE_URL. Copie server/.env.example a server/.env y configúrela.'
   );
+}
+
+if (!config.secretoQr) {
+  if (config.entorno === 'production') {
+    throw new Error('Falta la variable de entorno QR_JWT_SECRETO en producción.');
+  }
+  // Solo para desarrollo y pruebas locales.
+  config.secretoQr = 'secreto-qr-solo-desarrollo';
 }
 
 export default config;

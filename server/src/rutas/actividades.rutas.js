@@ -8,6 +8,8 @@ import {
   crear,
   editar,
   cambiarEstado,
+  obtenerQr,
+  listarParticipantes,
 } from '../controladores/actividades.controlador.js';
 
 export default function crearActividadesRutas(verificarToken) {
@@ -24,6 +26,10 @@ export default function crearActividadesRutas(verificarToken) {
   router.post('/', ...soloGestorOAdmin, crear);
   router.patch('/:id', ...soloGestorOAdmin, editar);
   router.patch('/:id/estado', ...soloGestorOAdmin, cambiarEstado);
+
+  // Participación (Fase 6): QR y lista de inscritos, solo panel.
+  router.get('/:id/qr', ...soloGestorOAdmin, obtenerQr);
+  router.get('/:id/participantes', ...soloGestorOAdmin, listarParticipantes);
 
   router.get('/:id', obtenerPublica);
 

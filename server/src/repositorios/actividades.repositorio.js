@@ -4,7 +4,9 @@ const COLUMNAS = `
   a.id, a.laboratorio_id, a.tematica_id, a.tipo, a.titulo, a.descripcion,
   a.estado, a.fecha_inicio, a.lugar, a.cupo, a.puntos, a.fecha_limite,
   a.tipo_evidencia, a.created_at, a.updated_at,
-  t.nombre AS tematica_nombre, l.nombre AS laboratorio_nombre
+  t.nombre AS tematica_nombre, l.nombre AS laboratorio_nombre,
+  (SELECT COUNT(*)::int FROM inscripciones i
+    WHERE i.actividad_id = a.id AND i.estado = 'activa') AS inscritos_activos
 `;
 
 const DESDE = `

@@ -124,6 +124,15 @@ npm run migrar:crear nombre-de-la-migracion   # crea una nueva
 | DELETE | `/api/v1/laboratorios/:id/gestores/:usuarioId` | Revoca un gestor | Admin |
 | GET | `/api/v1/usuarios?buscar=` | Busca usuarios por alias o correo | Admin |
 | PATCH | `/api/v1/usuarios/:id/estado` | Activa/desactiva una cuenta | Admin |
+| POST | `/api/v1/inscripciones` | Inscribirse a un evento (respeta cupo) | Sesión |
+| DELETE | `/api/v1/inscripciones/:id` | Cancelar la inscripción propia | Sesión |
+| GET | `/api/v1/inscripciones/mias` | Mis inscripciones activas | Sesión |
+| POST | `/api/v1/asistencias` | Registrar asistencia con el token del QR | Sesión |
+| POST | `/api/v1/asistencias/manual` | Asistencia manual de un inscrito | Gestor asignado / Admin |
+| GET | `/api/v1/actividades/:id/qr` | Token QR del evento (ventana temporal firmada) | Gestor asignado / Admin |
+| GET | `/api/v1/actividades/:id/participantes` | Inscritos y asistentes del evento | Gestor asignado / Admin |
+
+El QR de asistencia codifica una URL `https://<frontend>/asistencia/<token>`; el token es un JWT firmado por el servidor (`QR_JWT_SECRETO`) válido solo dentro de la ventana del evento (1 hora antes → 4 horas después del inicio).
 
 ### Primer administrador
 
