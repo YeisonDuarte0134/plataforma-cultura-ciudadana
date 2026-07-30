@@ -20,6 +20,12 @@ export default function Entrar() {
     try {
       await iniciarSesion(correo, contrasena);
       const perfil = await recargarPerfil();
+      // Asistencia pendiente: el usuario llegó escaneando un QR sin sesión.
+      const asistenciaPendiente = sessionStorage.getItem('asistenciaPendiente');
+      if (perfil && asistenciaPendiente) {
+        navegar(`/asistencia/${asistenciaPendiente}`);
+        return;
+      }
       // Cuenta sin perfil (registro interrumpido): se completa el registro.
       navegar(perfil ? '/' : '/registro');
     } catch (errorFirebase) {

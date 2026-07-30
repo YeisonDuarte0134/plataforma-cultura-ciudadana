@@ -19,6 +19,8 @@ services:
           property: connectionString
       - key: CORS_ORIGIN
         sync: false # URL del frontend en Vercel; se define en el panel de Render
+      - key: QR_JWT_SECRETO
+        generateValue: true # Render genera un secreto aleatorio para firmar los QR
 
 databases:
   - name: cultura-ciudadana-db

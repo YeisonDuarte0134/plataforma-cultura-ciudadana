@@ -5,6 +5,9 @@ import RutaPrivada from './componentes/RutaPrivada.jsx';
 import Laboratorios from './paginas/Laboratorios.jsx';
 import LaboratorioDetalle from './paginas/LaboratorioDetalle.jsx';
 import ActividadDetalle from './paginas/ActividadDetalle.jsx';
+import Asistencia from './paginas/Asistencia.jsx';
+import AdminActividadQR from './paginas/admin/AdminActividadQR.jsx';
+import AdminParticipantes from './paginas/admin/AdminParticipantes.jsx';
 import Entrar from './paginas/Entrar.jsx';
 import Registro from './paginas/Registro.jsx';
 import Perfil from './paginas/Perfil.jsx';
@@ -26,6 +29,7 @@ export default function App() {
             <Route index element={<Laboratorios />} />
             <Route path="laboratorios/:id" element={<LaboratorioDetalle />} />
             <Route path="actividades/:id" element={<ActividadDetalle />} />
+            <Route path="asistencia/:token" element={<Asistencia />} />
             <Route path="entrar" element={<Entrar />} />
             <Route path="registro" element={<Registro />} />
             <Route path="politica-de-datos" element={<PoliticaDatos />} />
@@ -45,6 +49,8 @@ export default function App() {
               <Route path="laboratorios/:labId/actividades" element={<AdminActividades />} />
               <Route path="laboratorios/:labId/actividades/nueva" element={<AdminActividadFormulario />} />
               <Route path="laboratorios/:labId/actividades/:id" element={<AdminActividadFormulario />} />
+              <Route path="laboratorios/:labId/actividades/:id/qr" element={<AdminActividadQR />} />
+              <Route path="laboratorios/:labId/actividades/:id/participantes" element={<AdminParticipantes />} />
               <Route path="tematicas" element={<AdminTematicas />} />
               <Route path="usuarios" element={<AdminUsuarios />} />
             </Route>

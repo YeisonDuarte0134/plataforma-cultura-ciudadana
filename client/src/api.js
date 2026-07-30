@@ -115,6 +115,40 @@ export function cambiarEstadoActividad(token, id, estado) {
   });
 }
 
+/* --- Participación: inscripciones y asistencia (Fase 6) --- */
+
+export function inscribirse(token, actividadId) {
+  return peticion('/api/v1/inscripciones', { token, metodo: 'POST', cuerpo: { actividadId } });
+}
+
+export function cancelarInscripcion(token, inscripcionId) {
+  return peticion(`/api/v1/inscripciones/${inscripcionId}`, { token, metodo: 'DELETE' });
+}
+
+export function obtenerMisInscripciones(token) {
+  return peticion('/api/v1/inscripciones/mias', { token });
+}
+
+export function registrarAsistencia(token, tokenQr) {
+  return peticion('/api/v1/asistencias', { token, metodo: 'POST', cuerpo: { token: tokenQr } });
+}
+
+export function obtenerQrActividad(token, actividadId) {
+  return peticion(`/api/v1/actividades/${actividadId}/qr`, { token });
+}
+
+export function obtenerParticipantes(token, actividadId) {
+  return peticion(`/api/v1/actividades/${actividadId}/participantes`, { token });
+}
+
+export function registrarAsistenciaManual(token, actividadId, usuarioId) {
+  return peticion('/api/v1/asistencias/manual', {
+    token,
+    metodo: 'POST',
+    cuerpo: { actividadId, usuarioId },
+  });
+}
+
 /* --- Panel de administración (Fase 4) --- */
 
 export function obtenerLaboratoriosAdministrables(token) {

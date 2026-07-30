@@ -7,6 +7,8 @@ import {
   editarEvento,
   transicionarEstado,
 } from '../servicios/actividades.servicio.js';
+import { generarTokenQr } from '../servicios/asistencias.servicio.js';
+import { consultarParticipantes } from '../servicios/inscripciones.servicio.js';
 
 export async function listarPublicas(req, res, next) {
   try {
@@ -59,6 +61,24 @@ export async function editar(req, res, next) {
 export async function cambiarEstado(req, res, next) {
   try {
     res.json(await transicionarEstado(req.perfil, req.params.id, req.body?.estado));
+  } catch (error) {
+    next(error);
+  }
+}
+
+/* --- Participación (Fase 6) --- */
+
+export async function obtenerQr(req, res, next) {
+  try {
+    res.json(await generarTokenQr(req.perfil, req.params.id));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function listarParticipantes(req, res, next) {
+  try {
+    res.json(await consultarParticipantes(req.perfil, req.params.id));
   } catch (error) {
     next(error);
   }

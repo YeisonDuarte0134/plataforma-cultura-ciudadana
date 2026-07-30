@@ -9,6 +9,8 @@ import crearLaboratoriosRutas from './rutas/laboratorios.rutas.js';
 import crearUsuariosRutas from './rutas/usuarios.rutas.js';
 import crearTematicasRutas from './rutas/tematicas.rutas.js';
 import crearActividadesRutas from './rutas/actividades.rutas.js';
+import crearInscripcionesRutas from './rutas/inscripciones.rutas.js';
+import crearAsistenciasRutas from './rutas/asistencias.rutas.js';
 import { rutaNoEncontrada, manejadorErrores } from './middleware/manejadorErrores.js';
 
 /**
@@ -29,6 +31,8 @@ export default function crearApp({ verificadorTokens }) {
   app.use('/api/v1/laboratorios', crearLaboratoriosRutas(verificarToken));
   app.use('/api/v1/tematicas', crearTematicasRutas(verificarToken));
   app.use('/api/v1/actividades', crearActividadesRutas(verificarToken));
+  app.use('/api/v1/inscripciones', crearInscripcionesRutas(verificarToken));
+  app.use('/api/v1/asistencias', crearAsistenciasRutas(verificarToken));
   app.use('/api/v1/usuarios', crearUsuariosRutas(verificarToken));
 
   app.use(rutaNoEncontrada);
