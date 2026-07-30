@@ -103,6 +103,16 @@ export default function AdminActividades() {
                     <span className={`insignia ${ETIQUETA_ESTADO[a.estado]}`}>{a.estado}</span>
                   </td>
                   <td className="tabla-acciones">
+                    {a.estado === 'publicada' && (
+                      <>
+                        <Link to={`/admin/laboratorios/${labId}/actividades/${a.id}/qr`} className="enlace-accion">
+                          QR
+                        </Link>
+                        <Link to={`/admin/laboratorios/${labId}/actividades/${a.id}/participantes`} className="enlace-accion">
+                          Participantes
+                        </Link>
+                      </>
+                    )}
                     {a.estado !== 'archivada' && (
                       <Link to={`/admin/laboratorios/${labId}/actividades/${a.id}`} className="enlace-accion">
                         Editar

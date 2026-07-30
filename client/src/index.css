@@ -723,6 +723,77 @@ body {
   border-bottom: none;
 }
 
+/* QR de asistencia (gestor) */
+.qr-pagina {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.qr-cartel {
+  background: var(--tarjeta);
+  border: 1px solid var(--borde);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+  max-width: 30rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.qr-cartel h2 {
+  font-size: 1.25rem;
+}
+
+.qr-imagen {
+  width: 100%;
+  max-width: 22rem;
+  border-radius: 0.5rem;
+  background: #fff;
+  padding: 0.5rem;
+}
+
+.qr-instruccion {
+  font-weight: 600;
+}
+
+.qr-ventana {
+  font-size: 0.85rem;
+}
+
+/* Resultado del escaneo (ciudadano) */
+.asistencia-resultado {
+  text-align: center;
+  align-items: center;
+}
+
+.asistencia-icono {
+  font-size: 3rem;
+}
+
+/* Impresión: solo el cartel del QR, en blanco y negro */
+@media print {
+  .cabecera,
+  .pie,
+  .no-imprimir {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .qr-cartel {
+    border: none;
+    box-shadow: none;
+  }
+}
+
 /* Documentos (política de datos) */
 .documento {
   max-width: 44rem;
