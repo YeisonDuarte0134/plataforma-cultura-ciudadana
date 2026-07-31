@@ -1,5 +1,6 @@
 import pool from '../db/pool.js';
 import { insertarEventoParticipacion } from './participacion.repositorio.js';
+import { procesarEventoGamificacion } from './gamificacion.repositorio.js';
 
 export async function buscarEvidenciaDeUsuario(actividadId, usuarioId) {
   const { rows } = await pool.query(
@@ -14,7 +15,7 @@ export async function buscarEvidenciaDeUsuario(actividadId, usuarioId) {
 export async function buscarEvidenciaPorId(id) {
   const { rows } = await pool.query(
     `SELECT e.id, e.actividad_id, e.usuario_id, e.estado, e.texto, e.foto_url,
-            e.comentario_gestor, a.laboratorio_id, a.tematica_id
+            e.comentario_gestor, a.laboratorio_id, a.tematica_id, a.puntos
        FROM evidencias e
        JOIN actividades a ON a.id = e.actividad_id
       WHERE e.id = $1`,
@@ -70,7 +71,8 @@ export async function guardarEnvio(actividad, usuarioId, { texto, fotoUrl }) {
 /**
  * Aplica la decisión del gestor sobre una evidencia pendiente y deja el
  * evento correspondiente en la bitácora (a nombre del ciudadano dueño del
- * envío: la bitácora registra su participación, no la del moderador).
+ * envío: la bitácora registra su participación, no la del moderador). La
+ * aprobación dispara la gamificación (Fase 8) en la misma transacción.
  */
 export async function moderarEvidencia(evidencia, decision, comentario, gestorId) {
   const estado = decision === 'aprobar' ? 'aprobada' : 'rechazada';
@@ -90,13 +92,15 @@ export async function moderarEvidencia(evidencia, decision, comentario, gestorId
       [evidencia.id, estado, comentario, gestorId]
     );
 
-    await insertarEventoParticipacion(cliente, {
+    const evento = await insertarEventoParticipacion(cliente, {
       usuarioId: evidencia.usuario_id,
       actividadId: evidencia.actividad_id,
       laboratorioId: evidencia.laboratorio_id,
       tematicaId: evidencia.tematica_id,
       tipoEvento: decision === 'aprobar' ? 'aprobacion_evidencia' : 'rechazo_evidencia',
     });
+
+    await procesarEventoGamificacion(cliente, evento, { puntos: evidencia.puntos });
 
     await cliente.query('COMMIT');
     return rows[0];

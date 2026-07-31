@@ -1,11 +1,13 @@
 import pool from '../db/pool.js';
 import { insertarEventoParticipacion } from './participacion.repositorio.js';
+import { procesarEventoGamificacion } from './gamificacion.repositorio.js';
 
 /**
- * Registra la asistencia y su evento de participación en una sola
- * transacción. La restricción de unicidad (actividad, usuario) es la
- * última línea de defensa contra dobles registros: si la fila ya existe
- * devuelve null y no toca la bitácora.
+ * Registra la asistencia, su evento de participación y la gamificación
+ * (puntos e insignias, Fase 8) en una sola transacción. La restricción de
+ * unicidad (actividad, usuario) es la última línea de defensa contra
+ * dobles registros: si la fila ya existe devuelve null y no toca la
+ * bitácora.
  */
 export async function crearAsistencia({ actividad, usuarioId, metodo, registradaPor = null }) {
   const cliente = await pool.connect();
@@ -25,13 +27,15 @@ export async function crearAsistencia({ actividad, usuarioId, metodo, registrada
       return null;
     }
 
-    await insertarEventoParticipacion(cliente, {
+    const evento = await insertarEventoParticipacion(cliente, {
       usuarioId,
       actividadId: actividad.id,
       laboratorioId: actividad.laboratorio_id,
       tematicaId: actividad.tematica_id,
       tipoEvento: 'asistencia',
     });
+
+    await procesarEventoGamificacion(cliente, evento, actividad);
 
     await cliente.query('COMMIT');
     return rows[0];
