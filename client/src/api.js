@@ -8,16 +8,7 @@ export class ErrorApi extends Error {
   }
 }
 
-async function peticion(ruta, { token, metodo = 'GET', cuerpo } = {}) {
-  const respuesta = await fetch(`${API_URL}${ruta}`, {
-    method: metodo,
-    headers: {
-      ...(cuerpo && { 'Content-Type': 'application/json' }),
-      ...(token && { Authorization: `Bearer ${token}` }),
-    },
-    ...(cuerpo && { body: JSON.stringify(cuerpo) }),
-  });
-
+async function interpretar(respuesta) {
   if (!respuesta.ok) {
     let mensaje = `La API respondió ${respuesta.status}`;
     try {
@@ -30,6 +21,28 @@ async function peticion(ruta, { token, metodo = 'GET', cuerpo } = {}) {
   }
 
   return respuesta.json();
+}
+
+async function peticion(ruta, { token, metodo = 'GET', cuerpo } = {}) {
+  const respuesta = await fetch(`${API_URL}${ruta}`, {
+    method: metodo,
+    headers: {
+      ...(cuerpo && { 'Content-Type': 'application/json' }),
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+    ...(cuerpo && { body: JSON.stringify(cuerpo) }),
+  });
+  return interpretar(respuesta);
+}
+
+/** Envío multipart (formularios con archivo); el navegador pone el Content-Type. */
+async function peticionFormulario(ruta, { token, formulario }) {
+  const respuesta = await fetch(`${API_URL}${ruta}`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: formulario,
+  });
+  return interpretar(respuesta);
 }
 
 export function obtenerSalud() {
@@ -146,6 +159,32 @@ export function registrarAsistenciaManual(token, actividadId, usuarioId) {
     token,
     metodo: 'POST',
     cuerpo: { actividadId, usuarioId },
+  });
+}
+
+/* --- Retos y evidencias (Fase 7) --- */
+
+export function enviarEvidencia(token, { actividadId, texto, foto }) {
+  const formulario = new FormData();
+  formulario.set('actividadId', actividadId);
+  if (texto) formulario.set('texto', texto);
+  if (foto) formulario.set('foto', foto);
+  return peticionFormulario('/api/v1/evidencias', { token, formulario });
+}
+
+export function obtenerMisEvidencias(token) {
+  return peticion('/api/v1/evidencias/mias', { token });
+}
+
+export function obtenerEvidenciasPendientes(token, laboratorioId) {
+  return peticion(`/api/v1/evidencias/pendientes?laboratorio=${laboratorioId}`, { token });
+}
+
+export function moderarEvidencia(token, id, decision, comentario) {
+  return peticion(`/api/v1/evidencias/${id}`, {
+    token,
+    metodo: 'PATCH',
+    cuerpo: { decision, ...(comentario && { comentario }) },
   });
 }
 

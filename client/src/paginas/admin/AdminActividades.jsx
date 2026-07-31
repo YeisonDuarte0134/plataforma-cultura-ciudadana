@@ -70,21 +70,27 @@ export default function AdminActividades() {
 
       <div className="admin-barra">
         <h2>Actividades — {laboratorio.nombre}</h2>
-        <Link to={`/admin/laboratorios/${labId}/actividades/nueva`} className="boton boton-pequeno">
-          + Nuevo evento
-        </Link>
+        <div className="tabla-acciones">
+          <Link to={`/admin/laboratorios/${labId}/evidencias`} className="boton boton-secundario boton-pequeno">
+            Cola de evidencias
+          </Link>
+          <Link to={`/admin/laboratorios/${labId}/actividades/nueva`} className="boton boton-pequeno">
+            + Nueva actividad
+          </Link>
+        </div>
       </div>
 
       {error && <p className="aviso aviso-error">{error}</p>}
 
       {actividades.length === 0 ? (
-        <p className="aviso">Este laboratorio aún no tiene actividades. Crea el primer evento.</p>
+        <p className="aviso">Este laboratorio aún no tiene actividades. Crea la primera.</p>
       ) : (
         <div className="tabla-envoltura">
           <table className="tabla">
             <thead>
               <tr>
                 <th>Título</th>
+                <th>Tipo</th>
                 <th>Temática</th>
                 <th>Fecha</th>
                 <th>Estado</th>
@@ -95,15 +101,18 @@ export default function AdminActividades() {
               {actividades.map((a) => (
                 <tr key={a.id}>
                   <td>{a.titulo}</td>
+                  <td className="texto-suave">{a.tipo}</td>
                   <td className="texto-suave">{a.tematica_nombre}</td>
                   <td className="texto-suave">
-                    {a.fecha_inicio ? new Date(a.fecha_inicio).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) : '—'}
+                    {a.tipo === 'reto'
+                      ? (a.fecha_limite ? `límite: ${new Date(a.fecha_limite).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}` : '—')
+                      : (a.fecha_inicio ? new Date(a.fecha_inicio).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) : '—')}
                   </td>
                   <td>
                     <span className={`insignia ${ETIQUETA_ESTADO[a.estado]}`}>{a.estado}</span>
                   </td>
                   <td className="tabla-acciones">
-                    {a.estado === 'publicada' && (
+                    {a.estado === 'publicada' && a.tipo === 'evento' && (
                       <>
                         <Link to={`/admin/laboratorios/${labId}/actividades/${a.id}/qr`} className="enlace-accion">
                           QR
