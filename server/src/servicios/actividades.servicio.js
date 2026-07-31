@@ -57,6 +57,23 @@ function validarCupo(valor) {
   return cupo;
 }
 
+function validarPuntos(valor) {
+  const puntos = Number(valor);
+  if (valor === undefined || !Number.isInteger(puntos) || puntos <= 0 || puntos > 10000) {
+    throw new ErrorHttp(400, 'Los puntos deben ser un entero entre 1 y 10000');
+  }
+  return puntos;
+}
+
+const TIPOS_EVIDENCIA = ['foto', 'texto', 'foto_y_texto'];
+
+function validarTipoEvidencia(valor) {
+  if (!TIPOS_EVIDENCIA.includes(valor)) {
+    throw new ErrorHttp(400, "El tipo de evidencia debe ser 'foto', 'texto' o 'foto_y_texto'");
+  }
+  return valor;
+}
+
 /** Autorización: el perfil debe ser admin o gestor asignado al laboratorio. */
 async function exigirAlcanceSobreLaboratorio(perfil, laboratorioId) {
   if (perfil.rol === 'administrador') return;
@@ -99,10 +116,10 @@ export async function consultarActividadesAdministrables(perfil, laboratorioIdCr
   return listarActividadesDeLaboratorio(laboratorioId);
 }
 
-export async function crearEvento(perfil, cuerpo) {
-  // En esta fase solo se crean eventos; los retos llegan en la Fase 7.
-  if (cuerpo?.tipo !== undefined && cuerpo.tipo !== 'evento') {
-    throw new ErrorHttp(400, "Por ahora solo se pueden crear actividades de tipo 'evento'");
+export async function crearNuevaActividad(perfil, cuerpo) {
+  const tipo = cuerpo?.tipo ?? 'evento';
+  if (!['evento', 'reto'].includes(tipo)) {
+    throw new ErrorHttp(400, "El tipo debe ser 'evento' o 'reto'");
   }
 
   const laboratorioId = validarId(cuerpo?.laboratorioId);
@@ -113,15 +130,28 @@ export async function crearEvento(perfil, cuerpo) {
 
   const tematica = await exigirTematicaActiva(cuerpo?.tematicaId);
 
-  return crearActividad({
+  const base = {
     laboratorioId,
     tematicaId: tematica.id,
-    tipo: 'evento',
+    tipo,
     titulo: validarTexto(cuerpo?.titulo, 'título', 5, 150),
     descripcion: validarTexto(cuerpo?.descripcion, 'descripción', 10, 3000),
-    fechaInicio: validarFecha(cuerpo?.fechaInicio, 'fecha de inicio'),
-    lugar: validarTexto(cuerpo?.lugar, 'lugar', 5, 200),
-    cupo: validarCupo(cuerpo?.cupo),
+  };
+
+  if (tipo === 'evento') {
+    return crearActividad({
+      ...base,
+      fechaInicio: validarFecha(cuerpo?.fechaInicio, 'fecha de inicio'),
+      lugar: validarTexto(cuerpo?.lugar, 'lugar', 5, 200),
+      cupo: validarCupo(cuerpo?.cupo),
+    });
+  }
+
+  return crearActividad({
+    ...base,
+    puntos: validarPuntos(cuerpo?.puntos),
+    fechaLimite: validarFecha(cuerpo?.fechaLimite, 'fecha límite'),
+    tipoEvidencia: validarTipoEvidencia(cuerpo?.tipoEvidencia),
   });
 }
 
@@ -136,7 +166,7 @@ export async function consultarActividadAdministrable(perfil, idCrudo) {
   return obtenerActividadConAlcance(perfil, idCrudo);
 }
 
-export async function editarEvento(perfil, idCrudo, cuerpo) {
+export async function editarActividadExistente(perfil, idCrudo, cuerpo) {
   const actividad = await obtenerActividadConAlcance(perfil, idCrudo);
 
   if (actividad.estado === 'archivada') {
@@ -146,14 +176,23 @@ export async function editarEvento(perfil, idCrudo, cuerpo) {
   const cambios = {
     titulo: validarTexto(cuerpo?.titulo, 'título', 5, 150, { opcional: true }),
     descripcion: validarTexto(cuerpo?.descripcion, 'descripción', 10, 3000, { opcional: true }),
-    fechaInicio: validarFecha(cuerpo?.fechaInicio, 'fecha de inicio', { opcional: true }),
-    lugar: validarTexto(cuerpo?.lugar, 'lugar', 5, 200, { opcional: true }),
-    cupo: cuerpo?.cupo !== undefined ? validarCupo(cuerpo.cupo) : undefined,
     tematicaId:
       cuerpo?.tematicaId !== undefined
         ? (await exigirTematicaActiva(cuerpo.tematicaId)).id
         : undefined,
   };
+
+  // Cada tipo solo admite sus propios campos; los del otro tipo se ignoran.
+  if (actividad.tipo === 'evento') {
+    cambios.fechaInicio = validarFecha(cuerpo?.fechaInicio, 'fecha de inicio', { opcional: true });
+    cambios.lugar = validarTexto(cuerpo?.lugar, 'lugar', 5, 200, { opcional: true });
+    cambios.cupo = cuerpo?.cupo !== undefined ? validarCupo(cuerpo.cupo) : undefined;
+  } else {
+    cambios.puntos = cuerpo?.puntos !== undefined ? validarPuntos(cuerpo.puntos) : undefined;
+    cambios.fechaLimite = validarFecha(cuerpo?.fechaLimite, 'fecha límite', { opcional: true });
+    cambios.tipoEvidencia =
+      cuerpo?.tipoEvidencia !== undefined ? validarTipoEvidencia(cuerpo.tipoEvidencia) : undefined;
+  }
 
   if (Object.values(cambios).every((v) => v === undefined)) {
     throw new ErrorHttp(400, 'No hay cambios para aplicar');

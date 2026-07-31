@@ -3,8 +3,8 @@ import {
   consultarActividadPublica,
   consultarActividadesAdministrables,
   consultarActividadAdministrable,
-  crearEvento,
-  editarEvento,
+  crearNuevaActividad,
+  editarActividadExistente,
   transicionarEstado,
 } from '../servicios/actividades.servicio.js';
 import { generarTokenQr } from '../servicios/asistencias.servicio.js';
@@ -44,7 +44,7 @@ export async function obtenerAdministrable(req, res, next) {
 
 export async function crear(req, res, next) {
   try {
-    res.status(201).json(await crearEvento(req.perfil, req.body));
+    res.status(201).json(await crearNuevaActividad(req.perfil, req.body));
   } catch (error) {
     next(error);
   }
@@ -52,7 +52,7 @@ export async function crear(req, res, next) {
 
 export async function editar(req, res, next) {
   try {
-    res.json(await editarEvento(req.perfil, req.params.id, req.body));
+    res.json(await editarActividadExistente(req.perfil, req.params.id, req.body));
   } catch (error) {
     next(error);
   }
