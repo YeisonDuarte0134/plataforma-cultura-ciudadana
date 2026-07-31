@@ -1,7 +1,18 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAutenticacion } from '../contexto/AutenticacionContexto.jsx';
-import { obtenerOpcionesRegistro, actualizarMiPerfil, ErrorApi } from '../api.js';
+import {
+  obtenerOpcionesRegistro,
+  actualizarMiPerfil,
+  obtenerMisEvidencias,
+  ErrorApi,
+} from '../api.js';
+
+const ETIQUETA_ENVIO = {
+  pendiente: { texto: 'En revisión', clase: 'insignia-neutra' },
+  aprobada: { texto: 'Aprobada', clase: 'insignia-ok' },
+  rechazada: { texto: 'Rechazada', clase: 'insignia-falla' },
+};
 
 export default function Perfil() {
   const { perfil, cerrarSesion, obtenerToken, recargarPerfil } = useAutenticacion();
@@ -11,6 +22,7 @@ export default function Perfil() {
   const [avatar, setAvatar] = useState(perfil?.avatar ?? null);
   const [telefono, setTelefono] = useState(perfil?.telefono ?? '');
   const [opciones, setOpciones] = useState(null);
+  const [evidencias, setEvidencias] = useState([]);
   const [mensaje, setMensaje] = useState(null);
   const [error, setError] = useState(null);
   const [guardando, setGuardando] = useState(false);
@@ -18,6 +30,13 @@ export default function Perfil() {
   useEffect(() => {
     obtenerOpcionesRegistro().then(setOpciones).catch(() => setOpciones(null));
   }, []);
+
+  useEffect(() => {
+    obtenerToken()
+      .then((token) => obtenerMisEvidencias(token))
+      .then(setEvidencias)
+      .catch(() => setEvidencias([]));
+  }, [obtenerToken]);
 
   async function manejarGuardar(evento) {
     evento.preventDefault();
@@ -112,6 +131,28 @@ export default function Perfil() {
           {guardando ? 'Guardando…' : 'Guardar cambios'}
         </button>
       </form>
+
+      {evidencias.length > 0 && (
+        <>
+          <hr className="separador" />
+          <section aria-label="Mis retos">
+            <h2 className="seccion-titulo">Mis retos</h2>
+            <ul className="envios-lista">
+              {evidencias.map((e) => (
+                <li key={e.id} className="envio-fila">
+                  <Link to={`/actividades/${e.actividad_id}`}>{e.titulo}</Link>
+                  <span className={`insignia ${ETIQUETA_ENVIO[e.estado].clase}`}>
+                    {ETIQUETA_ENVIO[e.estado].texto}
+                  </span>
+                  {e.estado === 'rechazada' && e.comentario_gestor && (
+                    <p className="texto-suave envio-comentario">«{e.comentario_gestor}»</p>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        </>
+      )}
 
       <hr className="separador" />
 

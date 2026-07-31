@@ -21,6 +21,8 @@ services:
         sync: false # URL del frontend en Vercel; se define en el panel de Render
       - key: QR_JWT_SECRETO
         generateValue: true # Render genera un secreto aleatorio para firmar los QR
+      - key: FIREBASE_STORAGE_BUCKET
+        value: plataforma-cultura-ciudadana.firebasestorage.app # fotos de evidencia (Fase 7)
 
 databases:
   - name: cultura-ciudadana-db

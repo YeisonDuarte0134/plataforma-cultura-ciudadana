@@ -11,6 +11,8 @@ const config = {
   entorno: process.env.NODE_ENV || 'development',
   // Firma de los tokens de asistencia por QR (JWT propio del servidor).
   secretoQr: process.env.QR_JWT_SECRETO,
+  // Bucket de Firebase Storage donde se guardan las fotos de evidencia.
+  bucketStorage: process.env.FIREBASE_STORAGE_BUCKET,
 };
 
 if (!config.urlBaseDatos) {

@@ -11,14 +11,15 @@ import crearTematicasRutas from './rutas/tematicas.rutas.js';
 import crearActividadesRutas from './rutas/actividades.rutas.js';
 import crearInscripcionesRutas from './rutas/inscripciones.rutas.js';
 import crearAsistenciasRutas from './rutas/asistencias.rutas.js';
+import crearEvidenciasRutas from './rutas/evidencias.rutas.js';
 import { rutaNoEncontrada, manejadorErrores } from './middleware/manejadorErrores.js';
 
 /**
- * Fábrica de la aplicación. `verificadorTokens` es la única dependencia
- * inyectable: en producción es firebase-admin (ver index.js); en pruebas,
- * un verificador falso que no requiere credenciales.
+ * Fábrica de la aplicación con sus dependencias inyectables: en producción
+ * `verificadorTokens` es firebase-admin y `almacenArchivos` Firebase Storage
+ * (ver index.js); en pruebas, dobles falsos que no requieren credenciales.
  */
-export default function crearApp({ verificadorTokens }) {
+export default function crearApp({ verificadorTokens, almacenArchivos }) {
   const app = express();
   const verificarToken = crearVerificarToken(verificadorTokens);
 
@@ -33,6 +34,7 @@ export default function crearApp({ verificadorTokens }) {
   app.use('/api/v1/actividades', crearActividadesRutas(verificarToken));
   app.use('/api/v1/inscripciones', crearInscripcionesRutas(verificarToken));
   app.use('/api/v1/asistencias', crearAsistenciasRutas(verificarToken));
+  app.use('/api/v1/evidencias', crearEvidenciasRutas(verificarToken, almacenArchivos));
   app.use('/api/v1/usuarios', crearUsuariosRutas(verificarToken));
 
   app.use(rutaNoEncontrada);

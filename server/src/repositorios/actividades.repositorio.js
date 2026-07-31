@@ -60,8 +60,9 @@ export async function buscarActividadPorId(id) {
 export async function crearActividad(datos) {
   const { rows } = await pool.query(
     `INSERT INTO actividades
-       (laboratorio_id, tematica_id, tipo, titulo, descripcion, fecha_inicio, lugar, cupo)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       (laboratorio_id, tematica_id, tipo, titulo, descripcion,
+        fecha_inicio, lugar, cupo, puntos, fecha_limite, tipo_evidencia)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
      RETURNING id`,
     [
       datos.laboratorioId,
@@ -69,9 +70,12 @@ export async function crearActividad(datos) {
       datos.tipo,
       datos.titulo,
       datos.descripcion,
-      datos.fechaInicio,
-      datos.lugar,
-      datos.cupo,
+      datos.fechaInicio ?? null,
+      datos.lugar ?? null,
+      datos.cupo ?? null,
+      datos.puntos ?? null,
+      datos.fechaLimite ?? null,
+      datos.tipoEvidencia ?? null,
     ]
   );
   return buscarActividadPorId(rows[0].id);
@@ -86,9 +90,23 @@ export async function actualizarActividad(id, cambios) {
             fecha_inicio = COALESCE($5, fecha_inicio),
             lugar = COALESCE($6, lugar),
             cupo = COALESCE($7, cupo),
+            puntos = COALESCE($8, puntos),
+            fecha_limite = COALESCE($9, fecha_limite),
+            tipo_evidencia = COALESCE($10, tipo_evidencia),
             updated_at = current_timestamp
       WHERE id = $1`,
-    [id, cambios.tematicaId, cambios.titulo, cambios.descripcion, cambios.fechaInicio, cambios.lugar, cambios.cupo]
+    [
+      id,
+      cambios.tematicaId,
+      cambios.titulo,
+      cambios.descripcion,
+      cambios.fechaInicio,
+      cambios.lugar,
+      cambios.cupo,
+      cambios.puntos,
+      cambios.fechaLimite,
+      cambios.tipoEvidencia,
+    ]
   );
   return buscarActividadPorId(id);
 }

@@ -23,6 +23,7 @@
     "firebase-admin": "^14.2.0",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.3",
+    "multer": "^2.2.0",
     "node-pg-migrate": "^7.9.0",
     "pg": "^8.13.1"
   },
