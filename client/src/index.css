@@ -931,3 +931,99 @@ a {
   border-radius: 0 0.5rem 0.5rem 0;
   font-style: italic;
 }
+
+/* --- Gamificación (Fase 8) --- */
+
+.progreso-resumen {
+  display: flex;
+  gap: 2rem;
+  margin: 0.75rem 0;
+}
+
+.progreso-dato {
+  display: flex;
+  flex-direction: column;
+}
+
+.progreso-cifra {
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.progreso-barra-zona {
+  margin-bottom: 1rem;
+}
+
+.progreso-barra {
+  height: 0.6rem;
+  border-radius: 999px;
+  background: var(--borde);
+  overflow: hidden;
+  margin-bottom: 0.35rem;
+}
+
+.progreso-barra-relleno {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--acento);
+  transition: width 0.4s ease;
+}
+
+.seccion-subtitulo {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 1rem;
+}
+
+.insignias-grilla {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.6rem;
+}
+
+.insignia-tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.25rem;
+  padding: 0.75rem 0.5rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.75rem;
+  background: var(--tarjeta);
+}
+
+.insignia-pendiente {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+
+.insignia-icono {
+  font-size: 1.8rem;
+}
+
+.insignia-nombre {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.insignia-detalle {
+  font-size: 0.75rem;
+}
+
+.ranking-filtro {
+  max-width: 24rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.ranking-puesto {
+  font-size: 1.1rem;
+  width: 4rem;
+}
+
+.ranking-participante {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}

@@ -17,6 +17,9 @@ export default function Layout() {
           </Link>
 
           <nav className="sesion" aria-label="Sesión">
+            <NavLink to="/ranking" className="sesion-enlace">
+              Ranking
+            </NavLink>
             {cargando ? null : perfil ? (
               <>
                 {['gestor', 'administrador'].includes(perfil.rol) && (

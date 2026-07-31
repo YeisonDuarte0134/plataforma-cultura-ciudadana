@@ -6,6 +6,7 @@ import Laboratorios from './paginas/Laboratorios.jsx';
 import LaboratorioDetalle from './paginas/LaboratorioDetalle.jsx';
 import ActividadDetalle from './paginas/ActividadDetalle.jsx';
 import Asistencia from './paginas/Asistencia.jsx';
+import Ranking from './paginas/Ranking.jsx';
 import AdminActividadQR from './paginas/admin/AdminActividadQR.jsx';
 import AdminParticipantes from './paginas/admin/AdminParticipantes.jsx';
 import Entrar from './paginas/Entrar.jsx';
@@ -31,6 +32,7 @@ export default function App() {
             <Route path="laboratorios/:id" element={<LaboratorioDetalle />} />
             <Route path="actividades/:id" element={<ActividadDetalle />} />
             <Route path="asistencia/:token" element={<Asistencia />} />
+            <Route path="ranking" element={<Ranking />} />
             <Route path="entrar" element={<Entrar />} />
             <Route path="registro" element={<Registro />} />
             <Route path="politica-de-datos" element={<PoliticaDatos />} />
