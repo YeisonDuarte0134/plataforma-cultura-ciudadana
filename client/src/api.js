@@ -188,6 +188,17 @@ export function moderarEvidencia(token, id, decision, comentario) {
   });
 }
 
+/* --- Gamificación (Fase 8) --- */
+
+export function obtenerMiProgreso(token) {
+  return peticion('/api/v1/gamificacion/mi-progreso', { token });
+}
+
+export function obtenerRanking(laboratorioId) {
+  const consulta = laboratorioId ? `?laboratorio=${laboratorioId}` : '';
+  return peticion(`/api/v1/gamificacion/ranking${consulta}`);
+}
+
 /* --- Panel de administración (Fase 4) --- */
 
 export function obtenerLaboratoriosAdministrables(token) {

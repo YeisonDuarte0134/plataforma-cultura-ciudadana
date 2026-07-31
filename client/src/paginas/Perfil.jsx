@@ -5,8 +5,14 @@ import {
   obtenerOpcionesRegistro,
   actualizarMiPerfil,
   obtenerMisEvidencias,
+  obtenerMiProgreso,
   ErrorApi,
 } from '../api.js';
+
+const ETIQUETA_ACCION = {
+  asistencia: 'Asistencia a evento',
+  reto_aprobado: 'Reto aprobado',
+};
 
 const ETIQUETA_ENVIO = {
   pendiente: { texto: 'En revisión', clase: 'insignia-neutra' },
@@ -23,6 +29,7 @@ export default function Perfil() {
   const [telefono, setTelefono] = useState(perfil?.telefono ?? '');
   const [opciones, setOpciones] = useState(null);
   const [evidencias, setEvidencias] = useState([]);
+  const [progreso, setProgreso] = useState(null);
   const [mensaje, setMensaje] = useState(null);
   const [error, setError] = useState(null);
   const [guardando, setGuardando] = useState(false);
@@ -33,9 +40,17 @@ export default function Perfil() {
 
   useEffect(() => {
     obtenerToken()
-      .then((token) => obtenerMisEvidencias(token))
-      .then(setEvidencias)
-      .catch(() => setEvidencias([]));
+      .then((token) =>
+        Promise.all([obtenerMisEvidencias(token), obtenerMiProgreso(token)])
+      )
+      .then(([misEvidencias, miProgreso]) => {
+        setEvidencias(misEvidencias);
+        setProgreso(miProgreso);
+      })
+      .catch(() => {
+        setEvidencias([]);
+        setProgreso(null);
+      });
   }, [obtenerToken]);
 
   async function manejarGuardar(evento) {
@@ -131,6 +146,96 @@ export default function Perfil() {
           {guardando ? 'Guardando…' : 'Guardar cambios'}
         </button>
       </form>
+
+      {progreso && (
+        <>
+          <hr className="separador" />
+          <section aria-label="Mi progreso">
+            <h2 className="seccion-titulo">Mi progreso</h2>
+
+            <div className="progreso-resumen">
+              <div className="progreso-dato">
+                <strong className="progreso-cifra">{progreso.puntos}</strong>
+                <span className="texto-suave">puntos</span>
+              </div>
+              <div className="progreso-dato">
+                <strong className="progreso-cifra">
+                  {progreso.nivel ? `Nivel ${progreso.nivel.numero}` : '—'}
+                </strong>
+                <span className="texto-suave">{progreso.nivel?.nombre}</span>
+              </div>
+            </div>
+
+            {progreso.siguienteNivel && progreso.nivel && (
+              <div className="progreso-barra-zona">
+                <div
+                  className="progreso-barra"
+                  role="progressbar"
+                  aria-valuenow={progreso.puntos}
+                  aria-valuemin={progreso.nivel.puntos_minimos}
+                  aria-valuemax={progreso.siguienteNivel.puntos_minimos}
+                >
+                  <div
+                    className="progreso-barra-relleno"
+                    style={{
+                      width: `${Math.round(
+                        ((progreso.puntos - progreso.nivel.puntos_minimos) * 100) /
+                          (progreso.siguienteNivel.puntos_minimos - progreso.nivel.puntos_minimos)
+                      )}%`,
+                    }}
+                  />
+                </div>
+                <p className="texto-suave">
+                  Te faltan <strong>{progreso.siguienteNivel.faltan} puntos</strong> para ser{' '}
+                  {progreso.siguienteNivel.nombre} (nivel {progreso.siguienteNivel.numero}).
+                </p>
+              </div>
+            )}
+
+            <h3 className="seccion-subtitulo">Insignias</h3>
+            <ul className="insignias-grilla">
+              {progreso.insignias.map((insignia) => (
+                <li
+                  key={insignia.codigo}
+                  className={`insignia-tarjeta${insignia.obtenida ? '' : ' insignia-pendiente'}`}
+                  title={insignia.descripcion}
+                >
+                  <span className="insignia-icono" aria-hidden="true">{insignia.icono}</span>
+                  <span className="insignia-nombre">{insignia.nombre}</span>
+                  <span className="texto-suave insignia-detalle">
+                    {insignia.obtenida
+                      ? `Obtenida el ${new Date(insignia.obtenida_en).toLocaleDateString('es-CO')}`
+                      : insignia.descripcion}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            {progreso.historial.length > 0 && (
+              <>
+                <h3 className="seccion-subtitulo">Historial de participación</h3>
+                <ul className="envios-lista">
+                  {progreso.historial.map((registro, indice) => (
+                    <li key={indice} className="envio-fila">
+                      <span>
+                        {ETIQUETA_ACCION[registro.accion] ?? registro.accion} ·{' '}
+                        <Link to={`/actividades/${registro.actividad_id}`}>
+                          {registro.actividad_titulo}
+                        </Link>
+                      </span>
+                      <span className="insignia insignia-ok">+{registro.puntos} pts</span>
+                      <p className="texto-suave envio-comentario">
+                        {registro.laboratorio_nombre} ·{' '}
+                        {new Date(registro.created_at).toLocaleDateString('es-CO')}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </section>
+        </>
+      )}
 
       {evidencias.length > 0 && (
         <>
