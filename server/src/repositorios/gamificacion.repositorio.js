@@ -132,6 +132,102 @@ export async function listarHistorialDeUsuario(usuarioId) {
   return rows;
 }
 
+/* --- Configuración del motor (Fase 9, solo administrador) --- */
+
+export async function listarReglas() {
+  const { rows } = await pool.query('SELECT accion, puntos FROM reglas_puntos ORDER BY accion');
+  return rows;
+}
+
+export async function actualizarRegla(accion, puntos) {
+  const { rows } = await pool.query(
+    `UPDATE reglas_puntos SET puntos = $2, updated_at = current_timestamp
+      WHERE accion = $1 RETURNING accion, puntos`,
+    [accion, puntos]
+  );
+  return rows[0] ?? null;
+}
+
+/**
+ * Reemplaza el conjunto completo de niveles en una transacción: así la
+ * validación de umbrales (orden, unicidad, base en cero) se hace sobre el
+ * conjunto final y nunca queda un estado intermedio inconsistente.
+ */
+export async function reemplazarNiveles(niveles) {
+  const cliente = await pool.connect();
+  try {
+    await cliente.query('BEGIN');
+    await cliente.query('DELETE FROM niveles');
+    for (const nivel of niveles) {
+      await cliente.query(
+        'INSERT INTO niveles (numero, nombre, puntos_minimos) VALUES ($1, $2, $3)',
+        [nivel.numero, nivel.nombre, nivel.puntos_minimos]
+      );
+    }
+    await cliente.query('COMMIT');
+  } catch (error) {
+    await cliente.query('ROLLBACK');
+    throw error;
+  } finally {
+    cliente.release();
+  }
+  return listarNiveles();
+}
+
+/** Catálogo completo de insignias para el panel (incluye inactivas y criterio). */
+export async function listarInsigniasCompletas() {
+  const { rows } = await pool.query(
+    'SELECT id, codigo, nombre, descripcion, icono, criterio, activa FROM insignias ORDER BY id'
+  );
+  return rows;
+}
+
+export async function buscarInsigniaPorCodigo(codigo) {
+  const { rows } = await pool.query('SELECT id FROM insignias WHERE codigo = $1', [codigo]);
+  return rows[0] ?? null;
+}
+
+export async function buscarInsigniaPorId(id) {
+  const { rows } = await pool.query(
+    'SELECT id, codigo, nombre, descripcion, icono, criterio, activa FROM insignias WHERE id = $1',
+    [id]
+  );
+  return rows[0] ?? null;
+}
+
+export async function crearInsignia(datos) {
+  const { rows } = await pool.query(
+    `INSERT INTO insignias (codigo, nombre, descripcion, icono, criterio)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id, codigo, nombre, descripcion, icono, criterio, activa`,
+    [datos.codigo, datos.nombre, datos.descripcion, datos.icono, JSON.stringify(datos.criterio)]
+  );
+  return rows[0];
+}
+
+export async function actualizarInsignia(id, cambios) {
+  const { rows } = await pool.query(
+    `UPDATE insignias SET
+       nombre = COALESCE($2, nombre),
+       descripcion = COALESCE($3, descripcion),
+       icono = COALESCE($4, icono),
+       criterio = COALESCE($5, criterio),
+       activa = COALESCE($6, activa),
+       updated_at = current_timestamp
+     WHERE id = $1
+     RETURNING id, codigo, nombre, descripcion, icono, criterio, activa`,
+    [
+      id,
+      cambios.nombre,
+      cambios.descripcion,
+      cambios.icono,
+      cambios.criterio !== undefined ? JSON.stringify(cambios.criterio) : undefined,
+      cambios.activa,
+    ]
+  );
+  return rows[0] ?? null;
+}
+
 /**
  * Ranking público: solo alias y avatar (datos anonimizados), personas
  * activas con al menos un otorgamiento, opcionalmente por laboratorio.
