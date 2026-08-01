@@ -17,6 +17,7 @@ import AdminLayout from './paginas/admin/AdminLayout.jsx';
 import AdminActividades from './paginas/admin/AdminActividades.jsx';
 import AdminActividadFormulario from './paginas/admin/AdminActividadFormulario.jsx';
 import AdminEvidencias from './paginas/admin/AdminEvidencias.jsx';
+import AdminGamificacion from './paginas/admin/AdminGamificacion.jsx';
 import AdminTematicas from './paginas/admin/AdminTematicas.jsx';
 import AdminLaboratorios from './paginas/admin/AdminLaboratorios.jsx';
 import AdminLaboratorioFormulario from './paginas/admin/AdminLaboratorioFormulario.jsx';
@@ -56,6 +57,7 @@ export default function App() {
               <Route path="laboratorios/:labId/actividades/:id/participantes" element={<AdminParticipantes />} />
               <Route path="laboratorios/:labId/evidencias" element={<AdminEvidencias />} />
               <Route path="tematicas" element={<AdminTematicas />} />
+              <Route path="gamificacion" element={<AdminGamificacion />} />
               <Route path="usuarios" element={<AdminUsuarios />} />
             </Route>
             <Route

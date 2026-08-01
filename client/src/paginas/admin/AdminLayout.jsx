@@ -31,6 +31,7 @@ export default function AdminLayout() {
         {perfil.rol === 'administrador' && (
           <>
             <NavLink to="/admin/tematicas">Temáticas</NavLink>
+            <NavLink to="/admin/gamificacion">Gamificación</NavLink>
             <NavLink to="/admin/usuarios">Usuarios</NavLink>
           </>
         )}

@@ -1027,3 +1027,77 @@ a {
   gap: 0.5rem;
   font-weight: 600;
 }
+
+/* --- Configuración de gamificación (Fase 9) --- */
+
+.config-reglas {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.config-regla {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.config-regla .campo {
+  max-width: 22rem;
+}
+
+.config-niveles input {
+  font: inherit;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.4rem;
+  background: var(--fondo);
+  color: var(--texto);
+  width: 100%;
+  min-width: 7rem;
+}
+
+.config-acciones {
+  margin: 0.75rem 0 1rem;
+}
+
+.config-insignias {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.config-insignia {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.config-insignia-inactiva {
+  opacity: 0.6;
+}
+
+.config-insignia-info {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.config-insignia-info p {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+}
+
+.config-criterio {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.config-criterio .campo {
+  min-width: 10rem;
+}
