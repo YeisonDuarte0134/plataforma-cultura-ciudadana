@@ -2,6 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import ErrorHttp from '../errores/ErrorHttp.js';
 import { cargarPerfil, requerirRol } from '../middleware/autenticacion.js';
+import { limitadorEvidencias } from '../middleware/limitadores.js';
 import crearEvidenciasControlador from '../controladores/evidencias.controlador.js';
 
 const TAMANO_MAXIMO_FOTO = 5 * 1024 * 1024; // 5 MB
@@ -44,7 +45,7 @@ export default function crearEvidenciasRutas(verificarToken, almacenArchivos) {
   // Rutas literales antes que la paramétrica /:id.
   router.get('/mias', controlador.mias);
   router.get('/pendientes', requerirRol('gestor', 'administrador'), controlador.pendientes);
-  router.post('/', recibirFoto, controlador.enviar);
+  router.post('/', limitadorEvidencias, recibirFoto, controlador.enviar);
   router.patch('/:id', requerirRol('gestor', 'administrador'), controlador.moderar);
 
   return router;

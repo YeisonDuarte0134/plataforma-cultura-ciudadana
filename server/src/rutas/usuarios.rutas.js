@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { cargarPerfil, requerirRol } from '../middleware/autenticacion.js';
+import { limitadorRegistro, limitadorHabeasData } from '../middleware/limitadores.js';
 import {
   registrar,
   obtenerMiPerfil,
@@ -25,15 +26,15 @@ export default function crearUsuariosRutas(verificarToken, dependencias) {
   const soloAdmin = [verificarToken, cargarPerfil, requerirRol('administrador')];
 
   router.get('/opciones-registro', obtenerOpcionesRegistro);
-  router.post('/registro', verificarToken, registrar);
+  router.post('/registro', limitadorRegistro, verificarToken, registrar);
   router.get('/me', verificarToken, cargarPerfil, obtenerMiPerfil);
   router.patch('/me', verificarToken, cargarPerfil, actualizarMiPerfil);
 
   // Temáticas de interés y Habeas Data (Fase 11).
   router.get('/me/intereses', verificarToken, cargarPerfil, misIntereses);
   router.put('/me/intereses', verificarToken, cargarPerfil, reemplazarMisIntereses);
-  router.post('/me/baja', verificarToken, cargarPerfil, bajaVoluntaria);
-  router.delete('/me', verificarToken, cargarPerfil, crearEliminarMiCuenta(dependencias));
+  router.post('/me/baja', verificarToken, limitadorHabeasData, cargarPerfil, bajaVoluntaria);
+  router.delete('/me', verificarToken, limitadorHabeasData, cargarPerfil, crearEliminarMiCuenta(dependencias));
 
   // Administración de usuarios (Fase 4).
   router.get('/', ...soloAdmin, buscarUsuariosComoAdmin);
