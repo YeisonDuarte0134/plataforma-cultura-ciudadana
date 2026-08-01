@@ -199,6 +199,40 @@ export function obtenerRanking(laboratorioId) {
   return peticion(`/api/v1/gamificacion/ranking${consulta}`);
 }
 
+/* --- Configuración de gamificación (Fase 9, solo admin) --- */
+
+export function obtenerConfiguracionGamificacion(token) {
+  return peticion('/api/v1/gamificacion/configuracion', { token });
+}
+
+export function actualizarReglaPuntos(token, accion, puntos) {
+  return peticion(`/api/v1/gamificacion/reglas/${accion}`, {
+    token,
+    metodo: 'PATCH',
+    cuerpo: { puntos },
+  });
+}
+
+export function guardarNiveles(token, niveles) {
+  return peticion('/api/v1/gamificacion/niveles', {
+    token,
+    metodo: 'PUT',
+    cuerpo: { niveles },
+  });
+}
+
+export function crearInsignia(token, datos) {
+  return peticion('/api/v1/gamificacion/insignias', { token, metodo: 'POST', cuerpo: datos });
+}
+
+export function editarInsignia(token, id, datos) {
+  return peticion(`/api/v1/gamificacion/insignias/${id}`, {
+    token,
+    metodo: 'PATCH',
+    cuerpo: datos,
+  });
+}
+
 /* --- Panel de administración (Fase 4) --- */
 
 export function obtenerLaboratoriosAdministrables(token) {

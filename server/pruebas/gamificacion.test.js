@@ -49,9 +49,18 @@ beforeEach(async () => {
   );
   await pool.query('DELETE FROM laboratorios');
   await pool.query('DELETE FROM tematicas');
-  // Los catálogos del motor vienen de la migración; solo se restauran los
-  // ajustes que alguna prueba pudo cambiar.
+  // Los catálogos del motor vienen de la migración; se restauran los
+  // valores que otras suites (configuración, Fase 9) pudieron cambiar.
   await pool.query('UPDATE insignias SET activa = true');
+  await pool.query("UPDATE reglas_puntos SET puntos = 10 WHERE accion = 'asistencia'");
+  await pool.query("UPDATE reglas_puntos SET puntos = 25 WHERE accion = 'reto_aprobado'");
+  await pool.query("DELETE FROM insignias WHERE codigo NOT IN ('primera_asistencia', 'primer_reto', 'constancia', 'racha_de_retos', 'exploracion_ciudadana')");
+  await pool.query('DELETE FROM niveles');
+  await pool.query(`
+    INSERT INTO niveles (numero, nombre, puntos_minimos) VALUES
+      (1, 'Semilla', 0), (2, 'Vecino activo', 50), (3, 'Tejedor de barrio', 150),
+      (4, 'Guardián ciudadano', 300), (5, 'Líder de cultura', 600)
+  `);
 
   const { rows: usuarios } = await pool.query(`
     INSERT INTO usuarios (firebase_uid, correo, alias, rol, consentimiento_version, consentimiento_fecha) VALUES
