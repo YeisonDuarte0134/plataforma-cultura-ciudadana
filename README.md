@@ -1,140 +1,95 @@
 # Plataforma de Laboratorios de Cultura Ciudadana
 
-Plataforma web para la gestión, seguimiento y gamificación de actividades en los laboratorios de cultura ciudadana de Bucaramanga. Proyecto de grado — propuesta aprobada 125-2026-027.
+Plataforma web gamificada para gestionar, hacer seguimiento y dinamizar los
+laboratorios de cultura ciudadana de Bucaramanga: vitrina pública, eventos con
+inscripción y asistencia por código QR, retos con evidencia y moderación,
+puntos/niveles/insignias con rankings, métricas por laboratorio, notificaciones
+internas y ejercicio del Habeas Data.
+
+Proyecto de grado (UTS) — propuesta aprobada 125-2026-027.
+Autores: Yeison Duarte y Janson Ardila. Director: Víctor Ochoa.
+
+**Producción**: SPA en <https://plataforma-cultura-ciudadana.vercel.app> ·
+API en <https://cultura-ciudadana-api.onrender.com>.
+
+## Documentación
+
+- [Documentación de la API](docs/api.md) — todos los endpoints, roles y errores.
+- [Manual técnico de despliegue](docs/manual-tecnico.md) — instalación local y despliegue en Render/Vercel/Firebase.
+- [Manual de usuario](docs/manual-usuario.md) — guía para ciudadanos, gestores y administradores.
 
 ## Stack
 
-- **PostgreSQL** — base de datos principal
-- **Express.js / Node.js** — API REST (`server/`)
-- **React (Vite)** — SPA (`client/`)
-- Próximas fases: Firebase Authentication (identidad) y Firebase Storage (archivos)
+- **PostgreSQL** — base de datos principal (todo el dominio vive aquí).
+- **Express.js / Node.js** — API REST (`server/`), capas estrictas
+  rutas → controladores → servicios → repositorios.
+- **React 18 + Vite** — SPA (`client/`), CSS propio sin frameworks de UI.
+- **Firebase** — solo Authentication (identidad) y Storage (fotos de
+  evidencia); no se usa Firestore.
 
 ## Estructura del repositorio
 
 ```
-├── server/          # API Express + migraciones de PostgreSQL
-│   ├── migrations/  # Migraciones versionadas (node-pg-migrate)
+├── server/            # API Express + migraciones de PostgreSQL
+│   ├── migrations/    # Migraciones versionadas (node-pg-migrate)
+│   ├── pruebas/       # Suite de integración (Jest + Supertest)
 │   └── src/
 │       ├── rutas/  → controladores/ → servicios/ → repositorios/
-│       ├── middleware/
+│       ├── middleware/   # autenticación, límites de tasa, errores
 │       └── db/
-├── client/          # SPA React (Vite)
+├── client/            # SPA React (Vite)
 │   └── src/
-└── render.yaml      # Blueprint de despliegue en Render
+│       ├── paginas/       # públicas, de usuario y panel /admin
+│       ├── componentes/
+│       └── contexto/      # sesión (Firebase Auth)
+├── docs/              # documentación de API y manuales
+└── render.yaml        # Blueprint de despliegue en Render
 ```
 
-## Requisitos
+## Funcionalidades
 
-- Node.js 20 o superior
-- PostgreSQL 14 o superior en ejecución local
+- **Vitrina pública**: laboratorios, agenda de eventos y retos, ranking
+  anonimizado. Participar exige cuenta (correo y contraseña vía Firebase Auth)
+  con consentimiento informado versionado (Ley 1581 de 2012).
+- **Participación**: inscripción con control de cupo, asistencia por QR firmado
+  con ventana temporal (con respaldo manual del gestor), retos con evidencia de
+  foto/texto moderada por el gestor.
+- **Gamificación**: motor idempotente definido por datos (reglas de puntos,
+  niveles e insignias configurables desde el panel); libro mayor auditable;
+  perfil con progreso y ranking público por laboratorio.
+- **Métricas**: dashboard por laboratorio (asistencia, finalización de retos,
+  preferencias temáticas, participantes activos) con filtros y exportación CSV;
+  consolidado global comparado para el administrador. Todo agregado y anónimo.
+- **Notificaciones internas**: nuevas actividades según temáticas de interés,
+  resultados de evidencias e insignias obtenidas.
+- **Habeas Data**: baja voluntaria y eliminación definitiva de la cuenta con
+  bitácora anonimizada (las métricas históricas no se corrompen).
+- **Seguridad**: validación y sanitización de toda entrada, autorización por
+  rol y por asignación de laboratorio, cabeceras de seguridad (helmet), CORS
+  restringido y límites de tasa en los endpoints sensibles.
 
-## Instalación y ejecución local
+## Ejecución local
 
-### 1. Base de datos
-
-Cree la base de datos (una sola vez):
+Requisitos: Node.js 20+, PostgreSQL 14+ y un proyecto de Firebase (para el
+detalle completo ver el [manual técnico](docs/manual-tecnico.md)).
 
 ```sh
+# 1. Base de datos
 psql -U postgres -c "CREATE DATABASE cultura_ciudadana;"
-```
 
-### 2. Servidor (API)
-
-```sh
+# 2. API
 cd server
 npm install
-copy .env.example .env   # En Linux/macOS: cp .env.example .env
-```
-
-Edite `server/.env` y configure `DATABASE_URL` con sus credenciales locales de PostgreSQL. **Nunca** suba el archivo `.env` al repositorio.
-
-Ejecute las migraciones y arranque la API:
-
-```sh
+cp .env.example .env    # configurar DATABASE_URL y credenciales de Firebase
 npm run migrar
-npm run dev
-```
+npm run dev             # http://localhost:3001
 
-La API queda en `http://localhost:3001`. Verifique: `http://localhost:3001/api/v1/salud`.
-
-### 3. Cliente (SPA)
-
-En otra terminal:
-
-```sh
+# 3. SPA (en otra terminal)
 cd client
 npm install
-copy .env.example .env   # VITE_API_URL ya apunta a http://localhost:3001
-npm run dev
+cp .env.example .env    # configurar las variables VITE_*
+npm run dev             # http://localhost:5173
 ```
-
-Abra `http://localhost:5173`: la página muestra el mensaje almacenado en PostgreSQL, servido por la API.
-
-## Variables de entorno
-
-### `server/.env`
-
-| Variable | Descripción | Ejemplo |
-|---|---|---|
-| `PORT` | Puerto de la API | `3001` |
-| `DATABASE_URL` | Conexión a PostgreSQL | `postgres://postgres:...@localhost:5432/cultura_ciudadana` |
-| `CORS_ORIGIN` | Origen permitido (URL del frontend) | `http://localhost:5173` |
-| `NODE_ENV` | `development` o `production` | `development` |
-
-### `client/.env`
-
-| Variable | Descripción | Ejemplo |
-|---|---|---|
-| `VITE_API_URL` | URL base de la API, sin barra final | `http://localhost:3001` |
-
-## Migraciones
-
-Las migraciones viven en `server/migrations/` y se versionan en Git.
-
-```sh
-npm run migrar            # aplica las pendientes
-npm run migrar:revertir   # revierte la última
-npm run migrar:crear nombre-de-la-migracion   # crea una nueva
-```
-
-## Despliegue
-
-- **Backend + PostgreSQL — Render (plan gratuito)**: en el panel de Render use *New → Blueprint* apuntando a este repositorio; `render.yaml` crea el servicio web y la base de datos. Configure la variable `CORS_ORIGIN` con la URL del frontend en Vercel. Las migraciones se ejecutan automáticamente en cada arranque.
-- **Frontend — Vercel (plan gratuito)**: importe el repositorio en Vercel con *Root Directory* = `client` (framework: Vite). Configure la variable `VITE_API_URL` con la URL del servicio de Render (sin barra final).
-
-> Nota del plan gratuito de Render: el servicio se "duerme" tras 15 minutos sin tráfico; la primera petición posterior puede tardar ~1 minuto (arranque en frío).
-
-## API
-
-| Método | Ruta | Descripción | Acceso |
-|---|---|---|---|
-| GET | `/api/v1/salud` | Estado de la API y conectividad a PostgreSQL | Público |
-| GET | `/api/v1/info` | Información de la plataforma leída de la base de datos | Público |
-| GET | `/api/v1/laboratorios` | Lista de laboratorios activos (vitrina pública) | Público |
-| GET | `/api/v1/laboratorios/:id` | Detalle de un laboratorio activo | Público |
-| GET | `/api/v1/usuarios/opciones-registro` | Versión del consentimiento y avatares permitidos | Público |
-| POST | `/api/v1/usuarios/registro` | Crea el perfil (exige consentimiento aceptado) | Token Firebase |
-| GET | `/api/v1/usuarios/me` | Perfil del usuario autenticado | Token Firebase |
-| PATCH | `/api/v1/usuarios/me` | Actualiza alias, avatar y teléfono | Token Firebase |
-| GET | `/api/v1/laboratorios/mios` | Laboratorios administrables del usuario | Gestor / Admin |
-| GET | `/api/v1/laboratorios/:id/admin` | Detalle administrable (incluye inactivos) | Gestor asignado / Admin |
-| POST | `/api/v1/laboratorios` | Crea un laboratorio | Admin |
-| PATCH | `/api/v1/laboratorios/:id` | Edita un laboratorio (`activo` solo admin) | Gestor asignado / Admin |
-| GET/POST | `/api/v1/laboratorios/:id/gestores` | Lista / asigna gestores | Admin |
-| DELETE | `/api/v1/laboratorios/:id/gestores/:usuarioId` | Revoca un gestor | Admin |
-| GET | `/api/v1/usuarios?buscar=` | Busca usuarios por alias o correo | Admin |
-| PATCH | `/api/v1/usuarios/:id/estado` | Activa/desactiva una cuenta | Admin |
-| POST | `/api/v1/inscripciones` | Inscribirse a un evento (respeta cupo) | Sesión |
-| DELETE | `/api/v1/inscripciones/:id` | Cancelar la inscripción propia | Sesión |
-| GET | `/api/v1/inscripciones/mias` | Mis inscripciones activas | Sesión |
-| POST | `/api/v1/asistencias` | Registrar asistencia con el token del QR | Sesión |
-| POST | `/api/v1/asistencias/manual` | Asistencia manual de un inscrito | Gestor asignado / Admin |
-| GET | `/api/v1/actividades/:id/qr` | Token QR del evento (ventana temporal firmada) | Gestor asignado / Admin |
-| GET | `/api/v1/actividades/:id/participantes` | Inscritos y asistentes del evento | Gestor asignado / Admin |
-
-El QR de asistencia codifica una URL `https://<frontend>/asistencia/<token>`; el token es un JWT firmado por el servidor (`QR_JWT_SECRETO`) válido solo dentro de la ventana del evento (1 hora antes → 4 horas después del inicio).
-
-### Primer administrador
 
 El primer administrador se promueve por consola (una sola vez):
 
@@ -143,8 +98,6 @@ cd server
 node scripts/promover-administrador.js correo@ejemplo.com
 ```
 
-Los endpoints protegidos esperan el encabezado `Authorization: Bearer <ID token de Firebase>`.
-
 ## Pruebas automatizadas
 
 ```sh
@@ -152,11 +105,33 @@ cd server
 npm test
 ```
 
-`npm test` crea la base `cultura_ciudadana_pruebas` (variable `DATABASE_URL_PRUEBAS`), le aplica las migraciones y ejecuta la suite de Jest + Supertest. Las pruebas de la Fase 3 cubren el control de acceso (401 sin token o con token inválido), el consentimiento obligatorio del registro, el perfil propio y el bloqueo de cuentas desactivadas.
+La suite (Jest + Supertest, 138 pruebas) crea la base
+`cultura_ciudadana_pruebas`, le aplica las migraciones y cubre los cuatro
+módulos críticos exigidos por la propuesta: **motor de gamificación**
+(otorgamiento, idempotencia, insignias, configuración), **API de
+participación** (inscripciones, cupo, QR, evidencias y moderación),
+**métricas** (cálculos contra datasets conocidos, filtros, CSV, anonimización)
+y **autenticación/permisos** (401/403 por rol y por asignación, Habeas Data,
+límites de tasa). Firebase se reemplaza por dobles inyectados: las pruebas no
+necesitan credenciales.
+
+## Migraciones
+
+```sh
+cd server
+npm run migrar            # aplica las pendientes
+npm run migrar:revertir   # revierte la última
+npm run migrar:crear nombre-de-la-migracion
+```
+
+Nunca se edita una migración ya aplicada en producción: se crea una nueva.
+En Render las migraciones corren automáticamente en cada arranque.
 
 ## Créditos de imágenes
 
-Las fotografías de los laboratorios semilla provienen de [Wikimedia Commons](https://commons.wikimedia.org) y se usan conforme a sus licencias (alojadas en Firebase Storage del proyecto):
+Las fotografías de los laboratorios semilla provienen de
+[Wikimedia Commons](https://commons.wikimedia.org) y se usan conforme a sus
+licencias (alojadas en Firebase Storage del proyecto):
 
 | Laboratorio | Obra original | Autor | Licencia |
 |---|---|---|---|
@@ -165,4 +140,5 @@ Las fotografías de los laboratorios semilla provienen de [Wikimedia Commons](ht
 | Parque García Rovira | [Parque García Rovira 1910-1920](https://commons.wikimedia.org/wiki/File:Parque_Garcia_Rovira_1910-1920.jpg) | Quintilio Gavassa Mibelli | Dominio público |
 | Cerro del Santísimo | [Jesus Statue, Floridablanca, Santander, Colombia](https://commons.wikimedia.org/wiki/File:Jesus_Statue,_Floridablanca,_Santander,_Colombia.jpg) | Tisquesusa | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 
-Las imágenes fueron redimensionadas y optimizadas para la web. Para subirlas a Firebase Storage se usa `server/scripts/subir-imagenes-laboratorios.js` (requiere las variables `GOOGLE_APPLICATION_CREDENTIALS` y `FIREBASE_STORAGE_BUCKET`).
+Las imágenes fueron redimensionadas y optimizadas para la web. Para subirlas a
+Firebase Storage se usa `server/scripts/subir-imagenes-laboratorios.js`.
