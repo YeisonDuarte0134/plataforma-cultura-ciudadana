@@ -200,6 +200,15 @@ describe('asignación de gestores (solo admin)', () => {
 });
 
 describe('administración de usuarios (solo admin)', () => {
+  test('sin texto de búsqueda se lista el directorio completo, ordenado por alias', async () => {
+    const res = await request(app).get('/api/v1/usuarios').set(...como('admin'));
+    expect(res.status).toBe(200);
+    // Todas las cuentas del beforeEach, sin necesidad de buscar nada.
+    expect(res.body.length).toBeGreaterThanOrEqual(3);
+    const alias = res.body.map((u) => u.alias);
+    expect(alias).toEqual([...alias].sort((a, b) => a.localeCompare(b)));
+  });
+
   test('el admin busca usuarios por alias o correo', async () => {
     const res = await request(app)
       .get('/api/v1/usuarios?buscar=gestor')

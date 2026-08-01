@@ -39,7 +39,8 @@ export async function buscarUsuarioPorId(id) {
   return rows[0] ?? null;
 }
 
-export async function buscarUsuarios(texto, limite = 20) {
+/** Con texto vacío el patrón es '%%' y lista el directorio completo. */
+export async function buscarUsuarios(texto, limite = 100) {
   const patron = `%${texto}%`;
   const { rows } = await pool.query(
     `SELECT ${COLUMNAS} FROM usuarios
