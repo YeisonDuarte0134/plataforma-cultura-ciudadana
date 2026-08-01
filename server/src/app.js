@@ -16,6 +16,7 @@ import crearGamificacionRutas from './rutas/gamificacion.rutas.js';
 import crearMetricasRutas from './rutas/metricas.rutas.js';
 import crearNotificacionesRutas from './rutas/notificaciones.rutas.js';
 import { rutaNoEncontrada, manejadorErrores } from './middleware/manejadorErrores.js';
+import { limitadorGlobal } from './middleware/limitadores.js';
 
 /**
  * Fábrica de la aplicación con sus dependencias inyectables: en producción
@@ -27,9 +28,14 @@ export default function crearApp({ verificadorTokens, almacenArchivos, cuentasAu
   const app = express();
   const verificarToken = crearVerificarToken(verificadorTokens);
 
+  // Render pone un proxy delante: con un salto de confianza, req.ip es la
+  // IP real del cliente y los límites de tasa cuentan por visitante.
+  app.set('trust proxy', 1);
+
   app.use(helmet());
   app.use(cors({ origin: config.origenCors }));
   app.use(express.json({ limit: '100kb' }));
+  app.use(limitadorGlobal);
 
   app.use('/api/v1/salud', saludRutas);
   app.use('/api/v1/info', infoRutas);
