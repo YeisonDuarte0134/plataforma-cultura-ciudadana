@@ -4,6 +4,7 @@ import {
   puntosPorAccion,
   cumpleCriterio,
 } from '../servicios/gamificacion.reglas.js';
+import { crearNotificacionInsignia } from './notificaciones.repositorio.js';
 
 /**
  * Procesa un evento de participación dentro de la transacción en curso:
@@ -69,17 +70,23 @@ async function evaluarInsignias(cliente, evento) {
   };
 
   const { rows: insignias } = await cliente.query(
-    'SELECT id, criterio FROM insignias WHERE activa'
+    'SELECT id, nombre, criterio FROM insignias WHERE activa'
   );
 
   for (const insignia of insignias) {
     if (!cumpleCriterio(insignia.criterio, medidas)) continue;
-    await cliente.query(
+    const { rows } = await cliente.query(
       `INSERT INTO insignias_otorgadas (usuario_id, insignia_id, evento_participacion_id)
        VALUES ($1, $2, $3)
-       ON CONFLICT (usuario_id, insignia_id) DO NOTHING`,
+       ON CONFLICT (usuario_id, insignia_id) DO NOTHING
+       RETURNING id`,
       [evento.usuario_id, insignia.id, evento.id]
     );
+    // Solo el otorgamiento real notifica (Fase 11); si ya la tenía, el
+    // ON CONFLICT no inserta y no hay nada que anunciar.
+    if (rows.length > 0) {
+      await crearNotificacionInsignia(cliente, evento.usuario_id, insignia);
+    }
   }
 }
 

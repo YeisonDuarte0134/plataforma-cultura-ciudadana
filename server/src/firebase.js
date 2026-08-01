@@ -48,4 +48,28 @@ export const almacenFirebase = {
 
     return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodeURIComponent(ruta)}?alt=media&token=${token}`;
   },
+
+  /**
+   * Borra del bucket la foto a la que apunta una URL de descarga propia
+   * (Fase 11, Habeas Data). La ruta del objeto viaja codificada en el
+   * segmento `/o/` de la URL.
+   */
+  async eliminarFotoPorUrl(url) {
+    obtenerApp();
+    const coincidencia = /\/o\/([^?]+)/.exec(url);
+    if (!coincidencia) return;
+    const ruta = decodeURIComponent(coincidencia[1]);
+    await getStorage().bucket().file(ruta).delete({ ignoreNotFound: true });
+  },
+};
+
+/**
+ * Cuentas de autenticación de producción (inyectable en crearApp): la
+ * eliminación definitiva de la Fase 11 borra también la cuenta de Firebase.
+ */
+export const cuentasFirebase = {
+  async eliminarCuenta(uid) {
+    obtenerApp();
+    await getAuth().deleteUser(uid);
+  },
 };

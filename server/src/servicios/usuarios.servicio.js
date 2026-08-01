@@ -3,7 +3,14 @@ import {
   buscarUsuarioPorFirebaseUid,
   crearUsuario,
   actualizarUsuario,
+  cambiarEstadoUsuario,
+  eliminarDatosDeUsuario,
 } from '../repositorios/usuarios.repositorio.js';
+import { listarTematicasActivas } from '../repositorios/tematicas.repositorio.js';
+import {
+  listarInteresesDeUsuario,
+  reemplazarIntereses,
+} from '../repositorios/intereses.repositorio.js';
 
 /** Versión vigente de la política de tratamiento de datos (Ley 1581 de 2012). */
 export const VERSION_CONSENTIMIENTO = '1.0 (2026-07-28)';
@@ -86,4 +93,73 @@ export async function actualizarPerfil(perfil, cuerpo) {
   }
 
   return actualizarUsuario(perfil.id, cambios);
+}
+
+/* --- Temáticas de interés (Fase 11, HU-7) --- */
+
+export function consultarMisIntereses(perfil) {
+  return listarInteresesDeUsuario(perfil.id);
+}
+
+/**
+ * Reemplaza el conjunto de intereses con la selección del formulario.
+ * Solo se aceptan temáticas activas: una temática desactivada no puede
+ * ganar interesados nuevos.
+ */
+export async function definirMisIntereses(perfil, cuerpo) {
+  const tematicas = cuerpo?.tematicas;
+  if (!Array.isArray(tematicas)) {
+    throw new ErrorHttp(400, "El cuerpo debe traer 'tematicas' como arreglo de ids");
+  }
+
+  const activas = new Set((await listarTematicasActivas()).map((t) => t.id));
+  const ids = [...new Set(tematicas.map(Number))];
+  for (const id of ids) {
+    if (!Number.isInteger(id) || !activas.has(id)) {
+      throw new ErrorHttp(400, 'Alguna de las temáticas elegidas no existe o no está activa');
+    }
+  }
+
+  return reemplazarIntereses(perfil.id, ids);
+}
+
+/* --- Habeas Data (Fase 11, HU-21) --- */
+
+/** Baja voluntaria: desactiva la cuenta; un administrador puede revertirla. */
+export async function darseDeBaja(perfil) {
+  await cambiarEstadoUsuario(perfil.id, 'desactivado');
+  return { mensaje: 'Tu cuenta quedó desactivada. Puedes pedir su reactivación cuando quieras.' };
+}
+
+/**
+ * Eliminación definitiva: exige confirmación explícita en el cuerpo, borra
+ * los datos personales y el contenido propio en una transacción (la
+ * bitácora queda anonimizada, ver el repositorio) y después intenta borrar
+ * la cuenta de Firebase y las fotos del almacén. Esos sistemas externos no
+ * participan de la transacción: si fallan se registra la advertencia y la
+ * respuesta sigue siendo exitosa, porque la fuente de verdad (PostgreSQL)
+ * ya no conserva datos personales y esa sesión ya no encuentra perfil.
+ */
+export async function eliminarCuentaPropia(perfil, cuerpo, { cuentasAuth, almacenArchivos }) {
+  if (cuerpo?.confirmacion !== 'ELIMINAR') {
+    throw new ErrorHttp(400, "Para eliminar la cuenta debes enviar la confirmación 'ELIMINAR'");
+  }
+
+  const fotos = await eliminarDatosDeUsuario(perfil.id);
+
+  try {
+    await cuentasAuth.eliminarCuenta(perfil.firebase_uid);
+  } catch (error) {
+    console.error('No se pudo eliminar la cuenta de Firebase Auth:', error.message);
+  }
+
+  for (const url of fotos) {
+    try {
+      await almacenArchivos.eliminarFotoPorUrl(url);
+    } catch (error) {
+      console.error('No se pudo eliminar una foto de evidencia del almacén:', error.message);
+    }
+  }
+
+  return { mensaje: 'Tu cuenta y tus datos personales fueron eliminados definitivamente.' };
 }

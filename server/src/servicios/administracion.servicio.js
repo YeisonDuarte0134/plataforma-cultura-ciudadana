@@ -97,5 +97,10 @@ export async function cambiarEstado(adminPerfil, usuarioIdCrudo, estado) {
     throw new ErrorHttp(400, 'No puede desactivar su propia cuenta');
   }
 
+  // El estado 'eliminado' es terminal (Habeas Data): nadie lo revierte.
+  if (usuario.estado === 'eliminado') {
+    throw new ErrorHttp(400, 'Una cuenta eliminada no se puede modificar');
+  }
+
   return cambiarEstadoUsuario(usuario.id, estado);
 }

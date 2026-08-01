@@ -1,6 +1,10 @@
 import {
   registrarUsuario,
   actualizarPerfil,
+  consultarMisIntereses,
+  definirMisIntereses,
+  darseDeBaja,
+  eliminarCuentaPropia,
   VERSION_CONSENTIMIENTO,
   AVATARES_PERMITIDOS,
 } from '../servicios/usuarios.servicio.js';
@@ -28,6 +32,46 @@ export async function actualizarMiPerfil(req, res, next) {
   } catch (error) {
     next(error);
   }
+}
+
+/* --- Temáticas de interés y Habeas Data (Fase 11) --- */
+
+export async function misIntereses(req, res, next) {
+  try {
+    res.json(await consultarMisIntereses(req.perfil));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function reemplazarMisIntereses(req, res, next) {
+  try {
+    res.json(await definirMisIntereses(req.perfil, req.body));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function bajaVoluntaria(req, res, next) {
+  try {
+    res.json(await darseDeBaja(req.perfil));
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * Fábrica: la eliminación necesita las dependencias externas inyectadas en
+ * crearApp (cuenta de Firebase y almacén de fotos), igual que evidencias.
+ */
+export function crearEliminarMiCuenta(dependencias) {
+  return async function eliminarMiCuenta(req, res, next) {
+    try {
+      res.json(await eliminarCuentaPropia(req.perfil, req.body, dependencias));
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 /* --- Administración (solo admin) --- */

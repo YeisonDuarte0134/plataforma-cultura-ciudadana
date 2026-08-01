@@ -14,14 +14,16 @@ import crearAsistenciasRutas from './rutas/asistencias.rutas.js';
 import crearEvidenciasRutas from './rutas/evidencias.rutas.js';
 import crearGamificacionRutas from './rutas/gamificacion.rutas.js';
 import crearMetricasRutas from './rutas/metricas.rutas.js';
+import crearNotificacionesRutas from './rutas/notificaciones.rutas.js';
 import { rutaNoEncontrada, manejadorErrores } from './middleware/manejadorErrores.js';
 
 /**
  * Fábrica de la aplicación con sus dependencias inyectables: en producción
- * `verificadorTokens` es firebase-admin y `almacenArchivos` Firebase Storage
- * (ver index.js); en pruebas, dobles falsos que no requieren credenciales.
+ * `verificadorTokens` es firebase-admin, `almacenArchivos` Firebase Storage
+ * y `cuentasAuth` las cuentas de Firebase Auth (ver index.js); en pruebas,
+ * dobles falsos que no requieren credenciales.
  */
-export default function crearApp({ verificadorTokens, almacenArchivos }) {
+export default function crearApp({ verificadorTokens, almacenArchivos, cuentasAuth }) {
   const app = express();
   const verificarToken = crearVerificarToken(verificadorTokens);
 
@@ -39,7 +41,8 @@ export default function crearApp({ verificadorTokens, almacenArchivos }) {
   app.use('/api/v1/evidencias', crearEvidenciasRutas(verificarToken, almacenArchivos));
   app.use('/api/v1/gamificacion', crearGamificacionRutas(verificarToken));
   app.use('/api/v1/metricas', crearMetricasRutas(verificarToken));
-  app.use('/api/v1/usuarios', crearUsuariosRutas(verificarToken));
+  app.use('/api/v1/notificaciones', crearNotificacionesRutas(verificarToken));
+  app.use('/api/v1/usuarios', crearUsuariosRutas(verificarToken, { cuentasAuth, almacenArchivos }));
 
   app.use(rutaNoEncontrada);
   app.use(manejadorErrores);

@@ -277,6 +277,40 @@ export function descargarCsvMetricasGlobales(token, filtros) {
   return descargarCsv('/api/v1/metricas/globales', token, filtros);
 }
 
+/* --- Notificaciones, intereses y Habeas Data (Fase 11) --- */
+
+export function obtenerMisIntereses(token) {
+  return peticion('/api/v1/usuarios/me/intereses', { token });
+}
+
+export function guardarMisIntereses(token, tematicaIds) {
+  return peticion('/api/v1/usuarios/me/intereses', {
+    token,
+    metodo: 'PUT',
+    cuerpo: { tematicas: tematicaIds },
+  });
+}
+
+export function obtenerNotificaciones(token) {
+  return peticion('/api/v1/notificaciones', { token });
+}
+
+export function marcarNotificacionesLeidas(token) {
+  return peticion('/api/v1/notificaciones/leidas', { token, metodo: 'PATCH' });
+}
+
+export function darseDeBaja(token) {
+  return peticion('/api/v1/usuarios/me/baja', { token, metodo: 'POST' });
+}
+
+export function eliminarMiCuenta(token) {
+  return peticion('/api/v1/usuarios/me', {
+    token,
+    metodo: 'DELETE',
+    cuerpo: { confirmacion: 'ELIMINAR' },
+  });
+}
+
 /* --- Panel de administración (Fase 4) --- */
 
 export function obtenerLaboratoriosAdministrables(token) {

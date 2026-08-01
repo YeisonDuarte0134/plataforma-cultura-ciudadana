@@ -43,7 +43,8 @@ export async function buscarUsuarios(texto, limite = 20) {
   const patron = `%${texto}%`;
   const { rows } = await pool.query(
     `SELECT ${COLUMNAS} FROM usuarios
-      WHERE alias ILIKE $1 OR correo ILIKE $1
+      WHERE (alias ILIKE $1 OR correo ILIKE $1)
+        AND estado <> 'eliminado'
       ORDER BY alias
       LIMIT $2`,
     [patron, limite]
@@ -67,6 +68,64 @@ export async function cambiarRolUsuario(id, rol) {
     [id, rol]
   );
   return rows[0] ?? null;
+}
+
+/* --- Habeas Data (Fase 11) --- */
+
+/**
+ * Eliminación definitiva de la cuenta (HU-21). La fila de `usuarios` no se
+ * borra —la bitácora y el libro mayor la referencian y las métricas
+ * agregadas dependen de poder distinguir personas históricas—: se
+ * ANONIMIZA. Se borran los datos personales (correo, alias, avatar,
+ * teléfono, uid de Firebase) y todo el contenido que la persona produjo
+ * (evidencias, notificaciones, intereses, inscripciones, asistencias).
+ * `eventos_participacion`, `puntos_otorgados` e `insignias_otorgadas` se
+ * conservan: solo contienen ids opacos, y el ranking ya excluye a quien no
+ * está activo.
+ *
+ * Devuelve las URLs de las fotos de evidencia para que el servicio las
+ * borre del almacén después del COMMIT (el almacén es externo a la BD).
+ */
+export async function eliminarDatosDeUsuario(usuarioId) {
+  const cliente = await pool.connect();
+  try {
+    await cliente.query('BEGIN');
+
+    const { rows: fotos } = await cliente.query(
+      'SELECT foto_url FROM evidencias WHERE usuario_id = $1 AND foto_url IS NOT NULL',
+      [usuarioId]
+    );
+
+    await cliente.query('DELETE FROM notificaciones WHERE usuario_id = $1', [usuarioId]);
+    await cliente.query('DELETE FROM intereses_usuario WHERE usuario_id = $1', [usuarioId]);
+    await cliente.query('DELETE FROM evidencias WHERE usuario_id = $1', [usuarioId]);
+    await cliente.query('DELETE FROM asistencias WHERE usuario_id = $1', [usuarioId]);
+    await cliente.query('DELETE FROM inscripciones WHERE usuario_id = $1', [usuarioId]);
+    await cliente.query('DELETE FROM asignaciones_gestor WHERE usuario_id = $1', [usuarioId]);
+
+    // La tumba anonimizada: sin datos personales, estado terminal. El uid
+    // sintético mantiene la unicidad y jamás coincidirá con uno real.
+    await cliente.query(
+      `UPDATE usuarios SET
+         estado = 'eliminado',
+         firebase_uid = 'eliminado-' || id,
+         correo = 'eliminado-' || id || '@cuenta-eliminada.invalido',
+         alias = '[cuenta eliminada]',
+         avatar = NULL,
+         telefono = NULL,
+         updated_at = current_timestamp
+       WHERE id = $1`,
+      [usuarioId]
+    );
+
+    await cliente.query('COMMIT');
+    return fotos.map((f) => f.foto_url);
+  } catch (error) {
+    await cliente.query('ROLLBACK');
+    throw error;
+  } finally {
+    cliente.release();
+  }
 }
 
 export async function actualizarUsuario(id, { alias, avatar, telefono }) {

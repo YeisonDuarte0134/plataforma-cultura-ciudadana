@@ -1,4 +1,5 @@
 import pool from '../db/pool.js';
+import { crearNotificacionesActividadPublicada } from './notificaciones.repositorio.js';
 
 const COLUMNAS = `
   a.id, a.laboratorio_id, a.tematica_id, a.tipo, a.titulo, a.descripcion,
@@ -111,10 +112,28 @@ export async function actualizarActividad(id, cambios) {
   return buscarActividadPorId(id);
 }
 
-export async function cambiarEstadoActividad(id, estado) {
-  await pool.query(
-    `UPDATE actividades SET estado = $2, updated_at = current_timestamp WHERE id = $1`,
-    [id, estado]
-  );
-  return buscarActividadPorId(id);
+export async function cambiarEstadoActividad(actividad, estado) {
+  const cliente = await pool.connect();
+  try {
+    await cliente.query('BEGIN');
+    await cliente.query(
+      `UPDATE actividades SET estado = $2, updated_at = current_timestamp WHERE id = $1`,
+      [actividad.id, estado]
+    );
+
+    // La publicación notifica a las personas interesadas en la temática
+    // (Fase 11), en la misma transacción que el cambio de estado: o pasa
+    // todo o no pasa nada. Solo al publicar: cerrar o archivar no avisa.
+    if (estado === 'publicada') {
+      await crearNotificacionesActividadPublicada(cliente, actividad);
+    }
+
+    await cliente.query('COMMIT');
+  } catch (error) {
+    await cliente.query('ROLLBACK');
+    throw error;
+  } finally {
+    cliente.release();
+  }
+  return buscarActividadPorId(actividad.id);
 }

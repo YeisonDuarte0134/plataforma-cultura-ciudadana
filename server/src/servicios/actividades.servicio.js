@@ -212,5 +212,5 @@ export async function transicionarEstado(perfil, idCrudo, estadoDestino) {
     );
   }
 
-  return cambiarEstadoActividad(actividad.id, estadoDestino);
+  return cambiarEstadoActividad(actividad, estadoDestino);
 }
