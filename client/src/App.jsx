@@ -7,6 +7,7 @@ import LaboratorioDetalle from './paginas/LaboratorioDetalle.jsx';
 import ActividadDetalle from './paginas/ActividadDetalle.jsx';
 import Asistencia from './paginas/Asistencia.jsx';
 import Ranking from './paginas/Ranking.jsx';
+import Notificaciones from './paginas/Notificaciones.jsx';
 import AdminActividadQR from './paginas/admin/AdminActividadQR.jsx';
 import AdminParticipantes from './paginas/admin/AdminParticipantes.jsx';
 import Entrar from './paginas/Entrar.jsx';
@@ -44,6 +45,14 @@ export default function App() {
               element={
                 <RutaPrivada>
                   <Perfil />
+                </RutaPrivada>
+              }
+            />
+            <Route
+              path="notificaciones"
+              element={
+                <RutaPrivada>
+                  <Notificaciones />
                 </RutaPrivada>
               }
             />

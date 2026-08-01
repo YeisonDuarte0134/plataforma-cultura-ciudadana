@@ -1,8 +1,25 @@
-import { Link, NavLink, Outlet } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAutenticacion } from '../contexto/AutenticacionContexto.jsx';
+import { obtenerNotificaciones } from '../api.js';
 
 export default function Layout() {
-  const { usuario, perfil, cargando } = useAutenticacion();
+  const { usuario, perfil, cargando, obtenerToken } = useAutenticacion();
+  const [noLeidas, setNoLeidas] = useState(0);
+  const { pathname } = useLocation();
+
+  // El indicador de no leídas se refresca al navegar: abrir la bandeja las
+  // marca leídas y, al salir de ella, el contador vuelve a cero solo.
+  useEffect(() => {
+    if (!perfil) {
+      setNoLeidas(0);
+      return;
+    }
+    obtenerToken()
+      .then((token) => obtenerNotificaciones(token))
+      .then((bandeja) => setNoLeidas(bandeja.noLeidas))
+      .catch(() => setNoLeidas(0));
+  }, [perfil, pathname, obtenerToken]);
 
   return (
     <div className="pagina">
@@ -27,6 +44,14 @@ export default function Layout() {
                     Panel
                   </NavLink>
                 )}
+                <NavLink
+                  to="/notificaciones"
+                  className="sesion-campana"
+                  aria-label={`Notificaciones${noLeidas > 0 ? ` (${noLeidas} sin leer)` : ''}`}
+                >
+                  <span aria-hidden="true">🔔</span>
+                  {noLeidas > 0 && <span className="campana-contador">{noLeidas}</span>}
+                </NavLink>
                 <NavLink to="/perfil" className="sesion-perfil">
                   <span className="sesion-avatar" aria-hidden="true">
                     {perfil.avatar ?? perfil.alias.charAt(0)}
