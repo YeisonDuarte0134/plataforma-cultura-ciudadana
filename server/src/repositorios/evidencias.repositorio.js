@@ -1,6 +1,7 @@
 import pool from '../db/pool.js';
 import { insertarEventoParticipacion } from './participacion.repositorio.js';
 import { procesarEventoGamificacion } from './gamificacion.repositorio.js';
+import { crearNotificacionEvidencia } from './notificaciones.repositorio.js';
 
 export async function buscarEvidenciaDeUsuario(actividadId, usuarioId) {
   const { rows } = await pool.query(
@@ -15,7 +16,7 @@ export async function buscarEvidenciaDeUsuario(actividadId, usuarioId) {
 export async function buscarEvidenciaPorId(id) {
   const { rows } = await pool.query(
     `SELECT e.id, e.actividad_id, e.usuario_id, e.estado, e.texto, e.foto_url,
-            e.comentario_gestor, a.laboratorio_id, a.tematica_id, a.puntos
+            e.comentario_gestor, a.laboratorio_id, a.tematica_id, a.puntos, a.titulo
        FROM evidencias e
        JOIN actividades a ON a.id = e.actividad_id
       WHERE e.id = $1`,
@@ -101,6 +102,10 @@ export async function moderarEvidencia(evidencia, decision, comentario, gestorId
     });
 
     await procesarEventoGamificacion(cliente, evento, { puntos: evidencia.puntos });
+
+    // La persona se entera del resultado por su bandeja (Fase 11), en la
+    // misma transacción que la decisión.
+    await crearNotificacionEvidencia(cliente, evidencia, decision);
 
     await cliente.query('COMMIT');
     return rows[0];
