@@ -13,6 +13,7 @@ import crearInscripcionesRutas from './rutas/inscripciones.rutas.js';
 import crearAsistenciasRutas from './rutas/asistencias.rutas.js';
 import crearEvidenciasRutas from './rutas/evidencias.rutas.js';
 import crearGamificacionRutas from './rutas/gamificacion.rutas.js';
+import crearMetricasRutas from './rutas/metricas.rutas.js';
 import { rutaNoEncontrada, manejadorErrores } from './middleware/manejadorErrores.js';
 
 /**
@@ -37,6 +38,7 @@ export default function crearApp({ verificadorTokens, almacenArchivos }) {
   app.use('/api/v1/asistencias', crearAsistenciasRutas(verificarToken));
   app.use('/api/v1/evidencias', crearEvidenciasRutas(verificarToken, almacenArchivos));
   app.use('/api/v1/gamificacion', crearGamificacionRutas(verificarToken));
+  app.use('/api/v1/metricas', crearMetricasRutas(verificarToken));
   app.use('/api/v1/usuarios', crearUsuariosRutas(verificarToken));
 
   app.use(rutaNoEncontrada);

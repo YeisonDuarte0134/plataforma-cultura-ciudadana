@@ -32,6 +32,7 @@ export default function AdminLayout() {
           <>
             <NavLink to="/admin/tematicas">Temáticas</NavLink>
             <NavLink to="/admin/gamificacion">Gamificación</NavLink>
+            <NavLink to="/admin/metricas">Métricas</NavLink>
             <NavLink to="/admin/usuarios">Usuarios</NavLink>
           </>
         )}
