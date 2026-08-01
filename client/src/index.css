@@ -1101,3 +1101,95 @@ a {
 .config-criterio .campo {
   min-width: 10rem;
 }
+
+/* --- Métricas y reportes (Fase 10) --- */
+
+.metricas-filtros {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.metricas-filtros label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.metricas-filtros input,
+.metricas-filtros select {
+  font: inherit;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.4rem;
+  background: var(--fondo);
+  color: var(--texto);
+  min-width: 9rem;
+}
+
+.metricas-filtros-acciones {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.metricas-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.metricas-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.75rem;
+  background: var(--tarjeta);
+}
+
+.metricas-tarjeta strong {
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.metricas-tarjeta span {
+  font-size: 0.8rem;
+}
+
+.grafica {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0.75rem 0 1.5rem;
+  max-width: 44rem;
+}
+
+.grafica-encabezado {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.grafica-barra {
+  height: 0.55rem;
+  border-radius: 999px;
+  min-width: 2px;
+}
+
+.grafica-barra-base {
+  background: var(--borde);
+  margin-bottom: 0.2rem;
+}
+
+.grafica-barra-logro {
+  background: var(--acento);
+}

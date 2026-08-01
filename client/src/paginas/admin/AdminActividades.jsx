@@ -71,6 +71,9 @@ export default function AdminActividades() {
       <div className="admin-barra">
         <h2>Actividades — {laboratorio.nombre}</h2>
         <div className="tabla-acciones">
+          <Link to={`/admin/laboratorios/${labId}/metricas`} className="boton boton-secundario boton-pequeno">
+            Métricas
+          </Link>
           <Link to={`/admin/laboratorios/${labId}/evidencias`} className="boton boton-secundario boton-pequeno">
             Cola de evidencias
           </Link>

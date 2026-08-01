@@ -233,6 +233,50 @@ export function editarInsignia(token, id, datos) {
   });
 }
 
+/* --- Métricas y reportes (Fase 10) --- */
+
+function consultaMetricas(filtros = {}) {
+  const parametros = new URLSearchParams();
+  if (filtros.desde) parametros.set('desde', filtros.desde);
+  if (filtros.hasta) parametros.set('hasta', filtros.hasta);
+  if (filtros.actividad) parametros.set('actividad', filtros.actividad);
+  if (filtros.tematica) parametros.set('tematica', filtros.tematica);
+  return parametros;
+}
+
+export function obtenerMetricasLaboratorio(token, laboratorioId, filtros) {
+  const consulta = consultaMetricas(filtros).toString();
+  return peticion(`/api/v1/metricas/laboratorios/${laboratorioId}${consulta ? `?${consulta}` : ''}`, {
+    token,
+  });
+}
+
+export function obtenerMetricasGlobales(token, filtros) {
+  const consulta = consultaMetricas(filtros).toString();
+  return peticion(`/api/v1/metricas/globales${consulta ? `?${consulta}` : ''}`, { token });
+}
+
+/** Descarga un reporte CSV autenticado; devuelve el blob listo para guardar. */
+async function descargarCsv(ruta, token, filtros) {
+  const parametros = consultaMetricas(filtros);
+  parametros.set('formato', 'csv');
+  const respuesta = await fetch(`${API_URL}${ruta}?${parametros}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!respuesta.ok) {
+    throw new ErrorApi(respuesta.status, `La API respondió ${respuesta.status}`);
+  }
+  return respuesta.blob();
+}
+
+export function descargarCsvMetricasLaboratorio(token, laboratorioId, filtros) {
+  return descargarCsv(`/api/v1/metricas/laboratorios/${laboratorioId}`, token, filtros);
+}
+
+export function descargarCsvMetricasGlobales(token, filtros) {
+  return descargarCsv('/api/v1/metricas/globales', token, filtros);
+}
+
 /* --- Panel de administración (Fase 4) --- */
 
 export function obtenerLaboratoriosAdministrables(token) {

@@ -18,6 +18,8 @@ import AdminActividades from './paginas/admin/AdminActividades.jsx';
 import AdminActividadFormulario from './paginas/admin/AdminActividadFormulario.jsx';
 import AdminEvidencias from './paginas/admin/AdminEvidencias.jsx';
 import AdminGamificacion from './paginas/admin/AdminGamificacion.jsx';
+import AdminMetricas from './paginas/admin/AdminMetricas.jsx';
+import AdminMetricasGlobales from './paginas/admin/AdminMetricasGlobales.jsx';
 import AdminTematicas from './paginas/admin/AdminTematicas.jsx';
 import AdminLaboratorios from './paginas/admin/AdminLaboratorios.jsx';
 import AdminLaboratorioFormulario from './paginas/admin/AdminLaboratorioFormulario.jsx';
@@ -56,8 +58,10 @@ export default function App() {
               <Route path="laboratorios/:labId/actividades/:id/qr" element={<AdminActividadQR />} />
               <Route path="laboratorios/:labId/actividades/:id/participantes" element={<AdminParticipantes />} />
               <Route path="laboratorios/:labId/evidencias" element={<AdminEvidencias />} />
+              <Route path="laboratorios/:labId/metricas" element={<AdminMetricas />} />
               <Route path="tematicas" element={<AdminTematicas />} />
               <Route path="gamificacion" element={<AdminGamificacion />} />
+              <Route path="metricas" element={<AdminMetricasGlobales />} />
               <Route path="usuarios" element={<AdminUsuarios />} />
             </Route>
             <Route
