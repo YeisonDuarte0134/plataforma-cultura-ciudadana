@@ -1,22 +1,53 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAutenticacion } from '../../contexto/AutenticacionContexto.jsx';
+import { EstadoCarga, EstadoError } from '../../componentes/Estados.jsx';
 import { buscarUsuarios, cambiarEstadoUsuario, ErrorApi } from '../../api.js';
 
-/** Administración de usuarios (solo admin): buscar, ver estado, activar/desactivar. */
+/**
+ * Administración de usuarios (solo admin). La pestaña abre con el
+ * directorio completo a la vista; la barra de búsqueda filtra por alias o
+ * correo y "Limpiar" vuelve a la lista completa.
+ */
 export default function AdminUsuarios() {
   const { perfil, obtenerToken } = useAutenticacion();
+  const [estado, setEstado] = useState('cargando');
   const [busqueda, setBusqueda] = useState('');
-  const [usuarios, setUsuarios] = useState(null);
+  const [filtroAplicado, setFiltroAplicado] = useState('');
+  const [usuarios, setUsuarios] = useState([]);
   const [error, setError] = useState(null);
 
-  async function manejarBusqueda(evento) {
+  const cargar = useCallback(
+    async (texto) => {
+      setError(null);
+      try {
+        setUsuarios(await buscarUsuarios(await obtenerToken(), texto));
+        setFiltroAplicado(texto);
+        setEstado('listo');
+      } catch (e) {
+        if (estado === 'cargando') {
+          setEstado('error');
+        } else {
+          setError(e instanceof ErrorApi ? e.message : 'Error en la búsqueda.');
+        }
+      }
+    },
+    [obtenerToken, estado]
+  );
+
+  useEffect(() => {
+    cargar('');
+    // Solo al montar: las búsquedas posteriores pasan por el formulario.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function manejarBusqueda(evento) {
     evento.preventDefault();
-    setError(null);
-    try {
-      setUsuarios(await buscarUsuarios(await obtenerToken(), busqueda));
-    } catch (e) {
-      setError(e instanceof ErrorApi ? e.message : 'Error en la búsqueda.');
-    }
+    cargar(busqueda.trim());
+  }
+
+  function limpiarBusqueda() {
+    setBusqueda('');
+    cargar('');
   }
 
   async function alternarEstado(usuario) {
@@ -30,6 +61,9 @@ export default function AdminUsuarios() {
     }
   }
 
+  if (estado === 'cargando') return <EstadoCarga mensaje="Cargando usuarios…" />;
+  if (estado === 'error') return <EstadoError />;
+
   return (
     <section>
       <h2>Usuarios de la plataforma</h2>
@@ -39,19 +73,32 @@ export default function AdminUsuarios() {
           type="search"
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
-          placeholder="Buscar por alias o correo…"
-          minLength={2}
-          required
+          placeholder="Filtrar por alias o correo…"
+          aria-label="Filtrar por alias o correo"
         />
         <button type="submit" className="boton boton-pequeno">Buscar</button>
+        {filtroAplicado && (
+          <button type="button" className="boton boton-secundario boton-pequeno" onClick={limpiarBusqueda}>
+            Limpiar
+          </button>
+        )}
       </form>
 
       {error && <p className="aviso aviso-error">{error}</p>}
 
-      {usuarios !== null &&
-        (usuarios.length === 0 ? (
-          <p className="aviso">Sin resultados para esa búsqueda.</p>
-        ) : (
+      {usuarios.length === 0 ? (
+        <p className="aviso">
+          {filtroAplicado
+            ? 'Sin resultados para esa búsqueda.'
+            : 'Aún no hay usuarios registrados.'}
+        </p>
+      ) : (
+        <>
+          <p className="texto-suave">
+            {filtroAplicado
+              ? `${usuarios.length} resultado${usuarios.length === 1 ? '' : 's'} para «${filtroAplicado}»`
+              : `${usuarios.length} usuario${usuarios.length === 1 ? '' : 's'} registrado${usuarios.length === 1 ? '' : 's'}`}
+          </p>
           <div className="tabla-envoltura">
             <table className="tabla">
               <thead>
@@ -90,7 +137,8 @@ export default function AdminUsuarios() {
               </tbody>
             </table>
           </div>
-        ))}
+        </>
+      )}
     </section>
   );
 }

@@ -78,10 +78,9 @@ export async function revocarGestor(laboratorioIdCrudo, usuarioIdCrudo) {
 
 export function buscarUsuariosAdmin(textoCrudo) {
   const texto = typeof textoCrudo === 'string' ? textoCrudo.trim() : '';
-  if (texto.length < 2) {
-    throw new ErrorHttp(400, 'Escriba al menos 2 caracteres para buscar');
-  }
-  // Se escapan los comodines de ILIKE para que la búsqueda sea literal.
+  // Sin texto se lista el directorio completo (la pestaña Usuarios abre con
+  // todos a la vista); con texto se filtra. Se escapan los comodines de
+  // ILIKE para que la búsqueda sea literal.
   return buscarUsuarios(texto.replace(/[%_\\]/g, '\\$&'));
 }
 
