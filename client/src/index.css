@@ -60,14 +60,24 @@ body {
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  flex-wrap: wrap; /* en pantallas angostas la sesión baja a una segunda fila */
+  gap: 0.5rem 1rem;
 }
 
 .sesion {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  /* Empuja la navegación a la derecha, comparta fila con la marca o no. */
+  margin-left: auto;
+}
+
+/* En teléfonos el alias se oculta: el avatar sigue siendo el enlace al
+   perfil y la cabecera cabe completa sin desbordar el documento. */
+@media (max-width: 30rem) {
+  .sesion-alias {
+    display: none;
+  }
 }
 
 .sesion-enlace {
@@ -562,6 +572,10 @@ body {
   display: flex;
   gap: 0.4rem;
   border-bottom: 1px solid var(--borde);
+  /* En móvil las pestañas se deslizan horizontalmente, como en las apps. */
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-nav a {
@@ -571,6 +585,8 @@ body {
   font-weight: 600;
   font-size: 0.95rem;
   border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .admin-nav a.active {
@@ -582,7 +598,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  flex-wrap: wrap; /* título y botones conviven en pantallas angostas */
+  gap: 0.5rem 1rem;
   margin-bottom: 0.75rem;
 }
 
@@ -683,12 +700,14 @@ body {
 
 .buscador {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin: 0.75rem 0;
 }
 
 .buscador input {
   flex: 1;
+  min-width: 12rem;
   font: inherit;
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--borde);
