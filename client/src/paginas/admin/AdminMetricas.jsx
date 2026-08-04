@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+﻿import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAutenticacion } from '../../contexto/AutenticacionContexto.jsx';
 import { EstadoCarga, EstadoError } from '../../componentes/Estados.jsx';
@@ -14,9 +14,9 @@ import {
 const FILTROS_VACIOS = { desde: '', hasta: '', actividad: '', tematica: '' };
 
 /**
- * Dashboard de métricas del laboratorio (HU-30/31/32): agregados de la
- * bitácora de participación con filtros por fechas, actividad y temática,
- * y exportación CSV de lo visible. Todo es anónimo: solo conteos.
+ * Dashboard de mÃ©tricas del laboratorio (HU-30/31/32): agregados de la
+ * bitÃ¡cora de participaciÃ³n con filtros por fechas, actividad y temÃ¡tica,
+ * y exportaciÃ³n CSV de lo visible. Todo es anÃ³nimo: solo conteos.
  */
 export default function AdminMetricas() {
   const { labId } = useParams();
@@ -39,7 +39,7 @@ export default function AdminMetricas() {
         if (estado === 'cargando') {
           setEstado('error');
         } else {
-          setError(e instanceof ErrorApi ? e.message : 'No fue posible actualizar las métricas.');
+          setError(e instanceof ErrorApi ? e.message : 'No fue posible actualizar las mÃ©tricas.');
         }
       }
     },
@@ -57,7 +57,7 @@ export default function AdminMetricas() {
         setActividades(lista);
         setTematicas(temas);
       } catch {
-        // Los selectores quedan vacíos; el dashboard sigue siendo usable.
+        // Los selectores quedan vacÃ­os; el dashboard sigue siendo usable.
       }
     })();
     cargar(FILTROS_VACIOS);
@@ -90,7 +90,7 @@ export default function AdminMetricas() {
     }
   }
 
-  if (estado === 'cargando') return <EstadoCarga mensaje="Calculando métricas…" />;
+  if (estado === 'cargando') return <EstadoCarga mensaje="Calculando mÃ©tricasâ€¦" />;
   if (estado === 'error') return <EstadoError />;
 
   const { resumen } = datos;
@@ -98,18 +98,18 @@ export default function AdminMetricas() {
   return (
     <section>
       <Link to={`/admin/laboratorios/${labId}/actividades`} className="volver">
-        ← Actividades
+        â† Actividades
       </Link>
 
       <div className="admin-barra">
-        <h2>Métricas — {datos.laboratorio.nombre}</h2>
+        <h2>MÃ©tricas â€” {datos.laboratorio.nombre}</h2>
         <button type="button" className="boton boton-secundario boton-pequeno" onClick={exportarCsv}>
           Exportar CSV
         </button>
       </div>
 
       <p className="texto-suave">
-        Datos agregados y anonimizados de la bitácora de participación; ningún indicador expone
+        Datos agregados y anonimizados de la bitÃ¡cora de participaciÃ³n; ningÃºn indicador expone
         personas individuales.
       </p>
 
@@ -145,7 +145,7 @@ export default function AdminMetricas() {
           </select>
         </label>
         <label>
-          Temática
+          TemÃ¡tica
           <select
             value={filtros.tematica}
             onChange={(e) => setFiltros({ ...filtros, tematica: e.target.value })}
@@ -175,7 +175,7 @@ export default function AdminMetricas() {
           { etiqueta: 'Participantes activos', valor: resumen.participantes_activos },
           { etiqueta: 'Inscripciones', valor: resumen.inscripciones },
           { etiqueta: 'Asistencias', valor: resumen.asistencias },
-          { etiqueta: 'Envíos de evidencia', valor: resumen.envios_evidencia },
+          { etiqueta: 'EnvÃ­os de evidencia', valor: resumen.envios_evidencia },
           { etiqueta: 'Evidencias aprobadas', valor: resumen.aprobaciones },
         ]}
       />
@@ -192,7 +192,7 @@ export default function AdminMetricas() {
         }))}
       />
 
-      <h3>Finalización de retos</h3>
+      <h3>FinalizaciÃ³n de retos</h3>
       <GraficaComparada
         etiquetaBase="Participantes"
         etiquetaLogro="Finalizados"
@@ -204,12 +204,12 @@ export default function AdminMetricas() {
         }))}
       />
 
-      <h3>Preferencias temáticas</h3>
+      <h3>Preferencias temÃ¡ticas</h3>
       <GraficaSimple
         filas={datos.tematicas.map((t) => ({
           etiqueta: t.nombre,
           valor: t.participaciones,
-          detalle: `${t.participaciones} participaciones · ${t.participantes} personas`,
+          detalle: `${t.participaciones} participaciones Â· ${t.participantes} personas`,
         }))}
       />
     </section>

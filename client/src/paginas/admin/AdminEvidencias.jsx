@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+﻿import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAutenticacion } from '../../contexto/AutenticacionContexto.jsx';
 import { EstadoCarga, EstadoError } from '../../componentes/Estados.jsx';
@@ -11,9 +11,9 @@ import {
 } from '../../api.js';
 
 /**
- * Cola de moderación del laboratorio: evidencias pendientes de los retos,
- * la más antigua primero. Aprobar es directo; rechazar exige un comentario
- * que el ciudadano verá para poder corregir y reenviar.
+ * Cola de moderaciÃ³n del laboratorio: evidencias pendientes de los retos,
+ * la mÃ¡s antigua primero. Aprobar es directo; rechazar exige un comentario
+ * que el ciudadano verÃ¡ para poder corregir y reenviar.
  */
 export default function AdminEvidencias() {
   const { labId } = useParams();
@@ -56,28 +56,28 @@ export default function AdminEvidencias() {
       setComentarios({ ...comentarios, [evidencia.id]: '' });
       await cargar();
     } catch (e) {
-      setError(e instanceof ErrorApi ? e.message : 'No fue posible aplicar la decisión.');
+      setError(e instanceof ErrorApi ? e.message : 'No fue posible aplicar la decisiÃ³n.');
     } finally {
       setProcesando(null);
     }
   }
 
-  if (estado === 'cargando') return <EstadoCarga mensaje="Cargando evidencias…" />;
+  if (estado === 'cargando') return <EstadoCarga mensaje="Cargando evidenciasâ€¦" />;
   if (estado === 'error') return <EstadoError />;
 
   return (
     <section>
-      <Link to={`/admin/laboratorios/${labId}/actividades`} className="volver">← Actividades</Link>
+      <Link to={`/admin/laboratorios/${labId}/actividades`} className="volver">â† Actividades</Link>
 
       <div className="admin-barra">
-        <h2>Evidencias pendientes — {laboratorio.nombre}</h2>
+        <h2>Evidencias pendientes â€” {laboratorio.nombre}</h2>
         <span className="texto-suave">{pendientes.length} por revisar</span>
       </div>
 
       {error && <p className="aviso aviso-error">{error}</p>}
 
       {pendientes.length === 0 ? (
-        <p className="aviso">No hay evidencias pendientes de revisión. ¡Al día!</p>
+        <p className="aviso">No hay evidencias pendientes de revisiÃ³n. Â¡Al dÃ­a!</p>
       ) : (
         <ul className="evidencias-lista">
           {pendientes.map((e) => (
@@ -86,8 +86,8 @@ export default function AdminEvidencias() {
                 <div>
                   <h3>{e.titulo}</h3>
                   <p className="texto-suave">
-                    {e.avatar ? `${e.avatar} ` : ''}{e.alias} · enviada el{' '}
-                    {formatearFechaCorta(e.updated_at)} · {e.puntos} puntos en juego
+                    {e.avatar ? `${e.avatar} ` : ''}{e.alias} Â· enviada el{' '}
+                    {formatearFechaCorta(e.updated_at)} Â· {e.puntos} puntos en juego
                   </p>
                 </div>
               </div>
@@ -96,7 +96,7 @@ export default function AdminEvidencias() {
                 <a href={e.foto_url} target="_blank" rel="noreferrer">
                   <img
                     src={e.foto_url}
-                    alt={`Evidencia fotográfica de ${e.alias}`}
+                    alt={`Evidencia fotogrÃ¡fica de ${e.alias}`}
                     className="evidencia-foto"
                     loading="lazy"
                   />
@@ -115,7 +115,7 @@ export default function AdminEvidencias() {
                       minLength={5}
                       maxLength={1000}
                       rows={3}
-                      placeholder="Explica qué debe corregir para que la evidencia sea aprobada…"
+                      placeholder="Explica quÃ© debe corregir para que la evidencia sea aprobadaâ€¦"
                     />
                   </label>
                   <div className="tabla-acciones">
@@ -125,7 +125,7 @@ export default function AdminEvidencias() {
                       onClick={() => decidir(e, 'rechazar')}
                       disabled={procesando === e.id}
                     >
-                      {procesando === e.id ? 'Aplicando…' : 'Confirmar rechazo'}
+                      {procesando === e.id ? 'Aplicandoâ€¦' : 'Confirmar rechazo'}
                     </button>
                     <button
                       type="button"
@@ -144,7 +144,7 @@ export default function AdminEvidencias() {
                     onClick={() => decidir(e, 'aprobar')}
                     disabled={procesando === e.id}
                   >
-                    {procesando === e.id ? 'Aplicando…' : '✓ Aprobar'}
+                    {procesando === e.id ? 'Aplicandoâ€¦' : 'âœ“ Aprobar'}
                   </button>
                   <button
                     type="button"
@@ -152,7 +152,7 @@ export default function AdminEvidencias() {
                     onClick={() => setRechazando(e.id)}
                     disabled={procesando === e.id}
                   >
-                    Rechazar…
+                    Rechazarâ€¦
                   </button>
                 </div>
               )}

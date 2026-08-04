@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { registrarAsistencia, ErrorApi } from '../api.js';
 import { useAutenticacion } from '../contexto/AutenticacionContexto.jsx';
 import { EstadoCarga } from '../componentes/Estados.jsx';
+import Icono from '../componentes/Icono.jsx';
 
 /**
  * Destino del QR escaneado: /asistencia/:tokenQr
@@ -60,8 +61,18 @@ export default function Asistencia() {
 
   return (
     <section className="formulario-tarjeta asistencia-resultado">
-      <span className="asistencia-icono" aria-hidden="true">
-        {resultado.tipo === 'exito' ? '✅' : '⚠️'}
+      {/* El sello de caucho cae sobre la boleta: la firma del sistema */}
+      <span
+        className={`sello-redondo sello-estampado${
+          resultado.tipo === 'exito' ? '' : ' sello-redondo-rojo'
+        }`}
+        aria-hidden="true"
+      >
+        <Icono
+          nombre={resultado.tipo === 'exito' ? 'sello' : 'alerta'}
+          tamano="2.6rem"
+        />
+        {resultado.tipo === 'exito' ? 'Asistencia' : 'Sin registro'}
       </span>
       <h1>{resultado.tipo === 'exito' ? '¡Asistencia registrada!' : 'No se pudo registrar'}</h1>
       <p className={resultado.tipo === 'exito' ? 'texto-suave' : 'aviso aviso-error'}>

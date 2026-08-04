@@ -4,6 +4,7 @@ import { obtenerLaboratorio, obtenerActividades } from '../api.js';
 import { EstadoCarga, EstadoError } from '../componentes/Estados.jsx';
 import ImagenLaboratorio from '../componentes/ImagenLaboratorio.jsx';
 import TarjetaEvento from '../componentes/TarjetaEvento.jsx';
+import Icono from '../componentes/Icono.jsx';
 
 export default function LaboratorioDetalle() {
   const { id } = useParams();
@@ -35,7 +36,7 @@ export default function LaboratorioDetalle() {
     <>
       <nav aria-label="Miga de pan">
         <Link to="/" className="volver">
-          ← Todos los laboratorios
+          Todos los laboratorios
         </Link>
       </nav>
 
@@ -47,7 +48,10 @@ export default function LaboratorioDetalle() {
         <article className="lab-detalle">
           <ImagenLaboratorio laboratorio={laboratorio} alto />
           <h1>{laboratorio.nombre}</h1>
-          <p className="lab-ubicacion">📍 {laboratorio.ubicacion}</p>
+          <p className="lab-ubicacion">
+            <Icono nombre="lugar" />
+            {laboratorio.ubicacion}
+          </p>
           <p className="lab-detalle-descripcion">{laboratorio.descripcion}</p>
 
           <section aria-label="Agenda de actividades">

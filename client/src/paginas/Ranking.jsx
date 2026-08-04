@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { obtenerRanking, obtenerLaboratorios } from '../api.js';
 import { EstadoCarga, EstadoError } from '../componentes/Estados.jsx';
 
-const MEDALLAS = ['🥇', '🥈', '🥉'];
-
 /**
  * Tabla de clasificación pública con datos anonimizados (alias y avatar):
  * general o filtrada por laboratorio. Visible sin registro.
@@ -30,7 +28,7 @@ export default function Ranking() {
 
   return (
     <section>
-      <h1>Tabla de clasificación</h1>
+      <h1 className="pagina-titulo">Tabla de clasificación</h1>
       <p className="texto-suave">
         Los puntos se ganan asistiendo a eventos y completando retos aprobados.
         Solo se muestran alias y avatares: la participación es anónima para el público.
@@ -70,7 +68,13 @@ export default function Ranking() {
                 {filas.map((fila) => (
                   <tr key={fila.posicion}>
                     <td className="ranking-puesto">
-                      {MEDALLAS[fila.posicion - 1] ?? fila.posicion}
+                      {fila.posicion <= 3 ? (
+                        <span className={`ranking-sello ranking-sello-${fila.posicion}`}>
+                          {fila.posicion}
+                        </span>
+                      ) : (
+                        fila.posicion
+                      )}
                     </td>
                     <td>
                       <span className="ranking-participante">

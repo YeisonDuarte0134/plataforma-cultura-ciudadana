@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+﻿import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAutenticacion } from '../../contexto/AutenticacionContexto.jsx';
 import { EstadoCarga, EstadoError } from '../../componentes/Estados.jsx';
@@ -73,12 +73,12 @@ export default function AdminLaboratorioFormulario() {
     }
   }
 
-  if (estado === 'cargando') return <EstadoCarga mensaje="Cargando laboratorio…" />;
+  if (estado === 'cargando') return <EstadoCarga mensaje="Cargando laboratorioâ€¦" />;
   if (estado === 'error') return <EstadoError />;
 
   return (
     <section>
-      <Link to="/admin/laboratorios" className="volver">← Laboratorios</Link>
+      <Link to="/admin/laboratorios" className="volver">â† Laboratorios</Link>
 
       <h2>{esNuevo ? 'Nuevo laboratorio' : 'Editar laboratorio'}</h2>
 
@@ -89,25 +89,25 @@ export default function AdminLaboratorioFormulario() {
         </label>
 
         <label className="campo">
-          Descripción
+          DescripciÃ³n
           <textarea value={datos.descripcion} onChange={cambiar('descripcion')} minLength={10} maxLength={2000} rows={5} required />
         </label>
 
         <label className="campo">
-          Ubicación
+          UbicaciÃ³n
           <input type="text" value={datos.ubicacion} onChange={cambiar('ubicacion')} minLength={5} maxLength={200} required />
         </label>
 
         <label className="campo">
           URL de la imagen (https, opcional)
-          <input type="url" value={datos.imagenUrl} onChange={cambiar('imagenUrl')} placeholder="https://firebasestorage.googleapis.com/…" />
+          <input type="url" value={datos.imagenUrl} onChange={cambiar('imagenUrl')} placeholder="https://firebasestorage.googleapis.com/â€¦" />
         </label>
 
         {mensaje && <p className="aviso aviso-ok">{mensaje}</p>}
         {error && <p className="aviso aviso-error">{error}</p>}
 
         <button type="submit" className="boton" disabled={guardando}>
-          {guardando ? 'Guardando…' : esNuevo ? 'Crear laboratorio' : 'Guardar cambios'}
+          {guardando ? 'Guardandoâ€¦' : esNuevo ? 'Crear laboratorio' : 'Guardar cambios'}
         </button>
       </form>
 

@@ -12,6 +12,7 @@ import {
 import { useAutenticacion } from '../contexto/AutenticacionContexto.jsx';
 import { EstadoCarga, EstadoError } from '../componentes/Estados.jsx';
 import { formatearFecha, formatearFechaCorta } from '../componentes/TarjetaEvento.jsx';
+import Icono from '../componentes/Icono.jsx';
 
 const ETIQUETA_EVIDENCIA = {
   foto: 'una foto',
@@ -86,7 +87,7 @@ export default function ActividadDetalle() {
     <article className="evento-detalle">
       <nav aria-label="Miga de pan">
         <Link to={`/laboratorios/${actividad.laboratorio_id}`} className="volver">
-          ← {actividad.laboratorio_nombre}
+          {actividad.laboratorio_nombre}
         </Link>
       </nav>
 
@@ -99,21 +100,33 @@ export default function ActividadDetalle() {
       <section className="tarjeta evento-datos">
         {esReto ? (
           <>
-            <p className="evento-dato">🏅 {actividad.puntos} puntos al aprobarse</p>
             <p className="evento-dato">
-              ⏳ Fecha límite: {formatearFechaCorta(actividad.fecha_limite)}
+              <Icono nombre="puntos" />
+              {actividad.puntos} puntos al aprobarse
             </p>
             <p className="evento-dato">
-              📎 Evidencia: {ETIQUETA_EVIDENCIA[actividad.tipo_evidencia]}
+              <Icono nombre="plazo" />
+              Fecha límite: {formatearFechaCorta(actividad.fecha_limite)}
+            </p>
+            <p className="evento-dato">
+              <Icono nombre="evidencia" />
+              Evidencia: {ETIQUETA_EVIDENCIA[actividad.tipo_evidencia]}
             </p>
           </>
         ) : (
           <>
-            <p className="evento-dato">📅 {formatearFecha(actividad.fecha_inicio)}</p>
-            <p className="evento-dato">📍 {actividad.lugar}</p>
+            <p className="evento-dato">
+              <Icono nombre="calendario" />
+              {formatearFecha(actividad.fecha_inicio)}
+            </p>
+            <p className="evento-dato">
+              <Icono nombre="lugar" />
+              {actividad.lugar}
+            </p>
             {actividad.cupo !== null && (
               <p className="evento-dato">
-                👥 {actividad.inscritos_activos} de {actividad.cupo} cupos ocupados
+                <Icono nombre="cupo" />
+                {actividad.inscritos_activos} de {actividad.cupo} cupos ocupados
               </p>
             )}
           </>
@@ -144,9 +157,10 @@ export default function ActividadDetalle() {
 
           {perfil && inscripcion && (
             <>
+              <p className="sello sello-estampado">Inscrito</p>
               <p className="aviso aviso-ok">
-                ✓ Estás inscrito. El día del evento escanea el código QR que
-                mostrará el gestor para registrar tu asistencia.
+                Tu cupo está reservado. El día del evento escanea el código QR
+                que mostrará el gestor para registrar tu asistencia.
               </p>
               <button
                 type="button"
@@ -232,24 +246,33 @@ function SeccionReto({ actividad, evidencia, usuario, perfil, obtenerToken, alTe
       )}
 
       {perfil && evidencia?.estado === 'pendiente' && (
-        <p className="aviso">
-          ⏳ Tu evidencia está <strong>en revisión</strong>. El gestor del
-          laboratorio la aprobará o te pedirá ajustes.
-        </p>
+        <>
+          <p className="sello sello-naranja sello-estampado">En revisión</p>
+          <p className="aviso">
+            Tu evidencia está <strong>en revisión</strong>. El gestor del
+            laboratorio la aprobará o te pedirá ajustes.
+          </p>
+        </>
       )}
 
       {perfil && evidencia?.estado === 'aprobada' && (
-        <p className="aviso aviso-ok">
-          ✓ ¡Reto completado! Tu evidencia fue aprobada
-          {evidencia.comentario_gestor && <> — «{evidencia.comentario_gestor}»</>}.
-        </p>
+        <>
+          <p className="sello sello-estampado">Reto completado</p>
+          <p className="aviso aviso-ok">
+            ¡Tu evidencia fue aprobada
+            {evidencia.comentario_gestor && <> — «{evidencia.comentario_gestor}»</>}!
+          </p>
+        </>
       )}
 
       {perfil && evidencia?.estado === 'rechazada' && (
-        <p className="aviso aviso-error">
-          Tu evidencia fue rechazada: «{evidencia.comentario_gestor}».
-          {!vencido && ' Corrígela y vuelve a enviarla.'}
-        </p>
+        <>
+          <p className="sello sello-rojo sello-estampado">Rechazada</p>
+          <p className="aviso aviso-error">
+            El gestor comentó: «{evidencia.comentario_gestor}».
+            {!vencido && ' Corrige tu evidencia y vuelve a enviarla.'}
+          </p>
+        </>
       )}
 
       {perfil && puedeEnviar && vencido && (
