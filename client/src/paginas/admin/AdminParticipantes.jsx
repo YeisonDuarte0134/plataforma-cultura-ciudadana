@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+﻿import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAutenticacion } from '../../contexto/AutenticacionContexto.jsx';
 import { EstadoCarga, EstadoError } from '../../componentes/Estados.jsx';
@@ -48,7 +48,7 @@ export default function AdminParticipantes() {
     }
   }
 
-  if (estado === 'cargando') return <EstadoCarga mensaje="Cargando participantes…" />;
+  if (estado === 'cargando') return <EstadoCarga mensaje="Cargando participantesâ€¦" />;
   if (estado === 'error') return <EstadoError />;
 
   const asistentes = participantes.filter((p) => p.asistencia_metodo).length;
@@ -56,19 +56,19 @@ export default function AdminParticipantes() {
   return (
     <section>
       <Link to={`/admin/laboratorios/${labId}/actividades`} className="volver">
-        ← Actividades
+        â† Actividades
       </Link>
 
-      <h2>Participantes — {actividad.titulo}</h2>
+      <h2>Participantes â€” {actividad.titulo}</h2>
       <p className="texto-suave">
-        {participantes.length} inscritos · {asistentes} asistentes
-        {actividad.cupo !== null && ` · cupo ${actividad.cupo}`}
+        {participantes.length} inscritos Â· {asistentes} asistentes
+        {actividad.cupo !== null && ` Â· cupo ${actividad.cupo}`}
       </p>
 
       {error && <p className="aviso aviso-error">{error}</p>}
 
       {participantes.length === 0 ? (
-        <p className="aviso">Aún no hay inscritos en este evento.</p>
+        <p className="aviso">AÃºn no hay inscritos en este evento.</p>
       ) : (
         <div className="tabla-envoltura">
           <table className="tabla">
@@ -83,12 +83,12 @@ export default function AdminParticipantes() {
             <tbody>
               {participantes.map((p) => (
                 <tr key={p.usuario_id}>
-                  <td>{p.avatar ?? '🙂'} {p.alias}</td>
+                  <td>{p.avatar ?? 'ðŸ™‚'} {p.alias}</td>
                   <td className="texto-suave">{p.correo}</td>
                   <td>
                     {p.asistencia_metodo ? (
                       <span className="insignia insignia-ok">
-                        ✓ {p.asistencia_metodo === 'qr' ? 'por QR' : 'manual'}
+                        âœ“ {p.asistencia_metodo === 'qr' ? 'por QR' : 'manual'}
                       </span>
                     ) : (
                       <span className="insignia insignia-neutra">pendiente</span>

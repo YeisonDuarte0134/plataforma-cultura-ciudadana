@@ -285,10 +285,10 @@ export default function Perfil() {
                   <div
                     className="progreso-barra-relleno"
                     style={{
-                      width: `${Math.round(
-                        ((progreso.puntos - progreso.nivel.puntos_minimos) * 100) /
-                          (progreso.siguienteNivel.puntos_minimos - progreso.nivel.puntos_minimos)
-                      )}%`,
+                      // Fracción 0..1: el CSS la anima con transform (no width)
+                      '--fraccion':
+                        (progreso.puntos - progreso.nivel.puntos_minimos) /
+                        (progreso.siguienteNivel.puntos_minimos - progreso.nivel.puntos_minimos),
                     }}
                   />
                 </div>

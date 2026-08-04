@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom';
 import { useAutenticacion } from '../contexto/AutenticacionContexto.jsx';
 import { EstadoCarga, EstadoError } from '../componentes/Estados.jsx';
 import { obtenerNotificaciones, marcarNotificacionesLeidas } from '../api.js';
+import Icono from '../componentes/Icono.jsx';
 
 const ICONO_TIPO = {
-  nueva_actividad: '📣',
-  evidencia_aprobada: '✅',
-  evidencia_rechazada: '✍️',
-  insignia_otorgada: '🏅',
+  nueva_actividad: 'megafono',
+  evidencia_aprobada: 'sello',
+  evidencia_rechazada: 'ajustes',
+  insignia_otorgada: 'puntos',
 };
 
 /**
@@ -42,7 +43,7 @@ export default function Notificaciones() {
 
   return (
     <section>
-      <h1>Notificaciones</h1>
+      <h1 className="pagina-titulo">Notificaciones</h1>
 
       {notificaciones.length === 0 ? (
         <p className="aviso">
@@ -57,7 +58,7 @@ export default function Notificaciones() {
               className={`notificacion${n.leida ? '' : ' notificacion-nueva'}`}
             >
               <span className="notificacion-icono" aria-hidden="true">
-                {ICONO_TIPO[n.tipo] ?? '🔔'}
+                <Icono nombre={ICONO_TIPO[n.tipo] ?? 'campana'} />
               </span>
               <div>
                 <p className="notificacion-mensaje">

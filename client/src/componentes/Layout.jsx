@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useAutenticacion } from '../contexto/AutenticacionContexto.jsx';
 import { obtenerNotificaciones } from '../api.js';
+import Icono from './Icono.jsx';
 
 export default function Layout() {
   const { usuario, perfil, cargando, obtenerToken } = useAutenticacion();
@@ -26,9 +27,11 @@ export default function Layout() {
       <header className="cabecera">
         <div className="cabecera-contenido">
           <Link to="/" className="marca">
-            <span className="marca-icono" aria-hidden="true">◈</span>
+            <span className="marca-icono">
+              <Icono nombre="boleta" tamano="1.35rem" />
+            </span>
             <span>
-              <strong>Laboratorios de Cultura Ciudadana</strong>
+              <strong>Cultura Ciudadana</strong>
               <small>Bucaramanga</small>
             </span>
           </Link>
@@ -49,7 +52,7 @@ export default function Layout() {
                   className="sesion-campana"
                   aria-label={`Notificaciones${noLeidas > 0 ? ` (${noLeidas} sin leer)` : ''}`}
                 >
-                  <span aria-hidden="true">🔔</span>
+                  <Icono nombre="campana" tamano="1.3rem" />
                   {noLeidas > 0 && <span className="campana-contador">{noLeidas}</span>}
                 </NavLink>
                 <NavLink to="/perfil" className="sesion-perfil">
