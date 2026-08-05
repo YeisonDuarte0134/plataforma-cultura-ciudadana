@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAutenticacion } from '../../contexto/AutenticacionContexto.jsx';
 import { EstadoCarga, EstadoError } from '../../componentes/Estados.jsx';
@@ -16,7 +16,7 @@ const ETIQUETA_ESTADO = {
   archivada: 'insignia-falla',
 };
 
-/** Botones de transiciÃ³n disponibles segÃºn el estado actual. */
+/** Botones de transición disponibles según el estado actual. */
 const TRANSICIONES = {
   borrador: [{ a: 'publicada', etiqueta: 'Publicar' }, { a: 'archivada', etiqueta: 'Archivar' }],
   publicada: [{ a: 'cerrada', etiqueta: 'Cerrar' }, { a: 'archivada', etiqueta: 'Archivar' }],
@@ -61,18 +61,18 @@ export default function AdminActividades() {
     }
   }
 
-  if (estado === 'cargando') return <EstadoCarga mensaje="Cargando actividadesâ€¦" />;
+  if (estado === 'cargando') return <EstadoCarga mensaje="Cargando actividades…" />;
   if (estado === 'error') return <EstadoError />;
 
   return (
     <section>
-      <Link to="/admin/laboratorios" className="volver">â† Laboratorios</Link>
+      <Link to="/admin/laboratorios" className="volver">← Laboratorios</Link>
 
       <div className="admin-barra">
-        <h2>Actividades â€” {laboratorio.nombre}</h2>
+        <h2>Actividades — {laboratorio.nombre}</h2>
         <div className="tabla-acciones">
           <Link to={`/admin/laboratorios/${labId}/metricas`} className="boton boton-secundario boton-pequeno">
-            MÃ©tricas
+            Métricas
           </Link>
           <Link to={`/admin/laboratorios/${labId}/evidencias`} className="boton boton-secundario boton-pequeno">
             Cola de evidencias
@@ -86,15 +86,15 @@ export default function AdminActividades() {
       {error && <p className="aviso aviso-error">{error}</p>}
 
       {actividades.length === 0 ? (
-        <p className="aviso">Este laboratorio aÃºn no tiene actividades. Crea la primera.</p>
+        <p className="aviso">Este laboratorio aún no tiene actividades. Crea la primera.</p>
       ) : (
         <div className="tabla-envoltura">
           <table className="tabla">
             <thead>
               <tr>
-                <th>TÃ­tulo</th>
+                <th>Título</th>
                 <th>Tipo</th>
-                <th>TemÃ¡tica</th>
+                <th>Temática</th>
                 <th>Fecha</th>
                 <th>Estado</th>
                 <th>Acciones</th>
@@ -108,8 +108,8 @@ export default function AdminActividades() {
                   <td className="texto-suave">{a.tematica_nombre}</td>
                   <td className="texto-suave">
                     {a.tipo === 'reto'
-                      ? (a.fecha_limite ? `lÃ­mite: ${new Date(a.fecha_limite).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}` : 'â€”')
-                      : (a.fecha_inicio ? new Date(a.fecha_inicio).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) : 'â€”')}
+                      ? (a.fecha_limite ? `límite: ${new Date(a.fecha_limite).toLocaleDateString('es-CO', { day: 'numeric', month: 'short' })}` : '—')
+                      : (a.fecha_inicio ? new Date(a.fecha_inicio).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' }) : '—')}
                   </td>
                   <td>
                     <span className={`insignia ${ETIQUETA_ESTADO[a.estado]}`}>{a.estado}</span>

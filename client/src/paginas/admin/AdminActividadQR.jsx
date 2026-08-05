@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import QRCode from 'qrcode';
 import { useAutenticacion } from '../../contexto/AutenticacionContexto.jsx';
@@ -36,37 +36,37 @@ export default function AdminActividadQR() {
     })();
   }, [id, obtenerToken]);
 
-  if (estado === 'cargando') return <EstadoCarga mensaje="Generando cÃ³digo QRâ€¦" />;
+  if (estado === 'cargando') return <EstadoCarga mensaje="Generando código QR…" />;
   if (estado === 'error') return <EstadoError mensaje={mensajeError} />;
 
   return (
     <section className="qr-pagina">
       <div className="no-imprimir">
         <Link to={`/admin/laboratorios/${labId}/actividades`} className="volver">
-          â† Actividades
+          ← Actividades
         </Link>
       </div>
 
       <div className="qr-cartel">
         <h2>{datos.actividad.titulo}</h2>
         <p className="texto-suave">
-          {formatearFecha(datos.actividad.fecha_inicio)} Â· {datos.actividad.lugar}
+          {formatearFecha(datos.actividad.fecha_inicio)} · {datos.actividad.lugar}
         </p>
 
-        <img src={imagenQr} alt="CÃ³digo QR para registrar asistencia" className="qr-imagen" />
+        <img src={imagenQr} alt="Código QR para registrar asistencia" className="qr-imagen" />
 
         <p className="qr-instruccion">
-          Escanea este cÃ³digo con la cÃ¡mara de tu celular para registrar tu asistencia
+          Escanea este código con la cámara de tu celular para registrar tu asistencia
         </p>
         <p className="texto-suave qr-ventana">
-          VÃ¡lido de {new Date(datos.ventana.desde).toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' })}{' '}
+          Válido de {new Date(datos.ventana.desde).toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' })}{' '}
           a {new Date(datos.ventana.hasta).toLocaleTimeString('es-CO', { hour: 'numeric', minute: '2-digit' })}
         </p>
       </div>
 
       <div className="no-imprimir qr-acciones">
         <button type="button" className="boton" onClick={() => window.print()}>
-          ðŸ–¨ Imprimir o guardar PDF
+          🖨 Imprimir o guardar PDF
         </button>
       </div>
     </section>
