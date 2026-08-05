@@ -56,7 +56,7 @@ export default function AdminParticipantes() {
   return (
     <section>
       <Link to={`/admin/laboratorios/${labId}/actividades`} className="volver">
-        ← Actividades
+        Actividades
       </Link>
 
       <h2>Participantes — {actividad.titulo}</h2>

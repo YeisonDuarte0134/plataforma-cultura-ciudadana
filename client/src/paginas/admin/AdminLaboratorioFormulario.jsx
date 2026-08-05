@@ -78,7 +78,7 @@ export default function AdminLaboratorioFormulario() {
 
   return (
     <section>
-      <Link to="/admin/laboratorios" className="volver">← Laboratorios</Link>
+      <Link to="/admin/laboratorios" className="volver">Laboratorios</Link>
 
       <h2>{esNuevo ? 'Nuevo laboratorio' : 'Editar laboratorio'}</h2>
 

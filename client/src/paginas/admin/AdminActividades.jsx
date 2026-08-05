@@ -66,7 +66,7 @@ export default function AdminActividades() {
 
   return (
     <section>
-      <Link to="/admin/laboratorios" className="volver">← Laboratorios</Link>
+      <Link to="/admin/laboratorios" className="volver">Laboratorios</Link>
 
       <div className="admin-barra">
         <h2>Actividades — {laboratorio.nombre}</h2>
