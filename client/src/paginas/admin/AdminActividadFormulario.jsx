@@ -122,7 +122,7 @@ export default function AdminActividadFormulario() {
 
   return (
     <section>
-      <Link to={`/admin/laboratorios/${labId}/actividades`} className="volver">← Actividades</Link>
+      <Link to={`/admin/laboratorios/${labId}/actividades`} className="volver">Actividades</Link>
 
       <h2>{esNuevo ? 'Nueva actividad' : `Editar ${etiquetaTipo}`}</h2>
       <p className="texto-suave">

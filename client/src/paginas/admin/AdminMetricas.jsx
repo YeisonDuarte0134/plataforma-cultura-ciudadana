@@ -98,7 +98,7 @@ export default function AdminMetricas() {
   return (
     <section>
       <Link to={`/admin/laboratorios/${labId}/actividades`} className="volver">
-        ← Actividades
+        Actividades
       </Link>
 
       <div className="admin-barra">

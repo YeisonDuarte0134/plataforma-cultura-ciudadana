@@ -67,7 +67,7 @@ export default function AdminEvidencias() {
 
   return (
     <section>
-      <Link to={`/admin/laboratorios/${labId}/actividades`} className="volver">← Actividades</Link>
+      <Link to={`/admin/laboratorios/${labId}/actividades`} className="volver">Actividades</Link>
 
       <div className="admin-barra">
         <h2>Evidencias pendientes — {laboratorio.nombre}</h2>
