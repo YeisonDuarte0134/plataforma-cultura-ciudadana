@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useAutenticacion } from '../../contexto/AutenticacionContexto.jsx';
 import { EstadoCarga, EstadoError } from '../../componentes/Estados.jsx';
@@ -117,17 +117,17 @@ export default function AdminActividadFormulario() {
     }
   }
 
-  if (estado === 'cargando') return <EstadoCarga mensaje="Cargandoâ€¦" />;
+  if (estado === 'cargando') return <EstadoCarga mensaje="Cargando…" />;
   if (estado === 'error') return <EstadoError />;
 
   return (
     <section>
-      <Link to={`/admin/laboratorios/${labId}/actividades`} className="volver">â† Actividades</Link>
+      <Link to={`/admin/laboratorios/${labId}/actividades`} className="volver">← Actividades</Link>
 
       <h2>{esNuevo ? 'Nueva actividad' : `Editar ${etiquetaTipo}`}</h2>
       <p className="texto-suave">
-        La actividad se crea en estado <strong>borrador</strong>; publÃ­cala desde
-        la lista cuando estÃ© lista.
+        La actividad se crea en estado <strong>borrador</strong>; publícala desde
+        la lista cuando esté lista.
       </p>
 
       <form onSubmit={manejarEnvio} className="formulario formulario-ancho">
@@ -153,26 +153,26 @@ export default function AdminActividadFormulario() {
                   checked={tipo === 'reto'}
                   onChange={() => setTipo('reto')}
                 />
-                Reto con evidencia (puntos y fecha lÃ­mite)
+                Reto con evidencia (puntos y fecha límite)
               </label>
             </div>
           </fieldset>
         )}
 
         <label className="campo">
-          TÃ­tulo
+          Título
           <input type="text" value={datos.titulo} onChange={cambiar('titulo')} minLength={5} maxLength={150} required />
         </label>
 
         <label className="campo">
-          DescripciÃ³n
+          Descripción
           <textarea value={datos.descripcion} onChange={cambiar('descripcion')} minLength={10} maxLength={3000} rows={5} required />
         </label>
 
         <label className="campo">
-          TemÃ¡tica
+          Temática
           <select value={datos.tematicaId} onChange={cambiar('tematicaId')} required>
-            <option value="" disabled>Selecciona una temÃ¡ticaâ€¦</option>
+            <option value="" disabled>Selecciona una temática…</option>
             {tematicas.map((t) => (
               <option key={t.id} value={t.id}>{t.nombre}</option>
             ))}
@@ -187,7 +187,7 @@ export default function AdminActividadFormulario() {
             </label>
 
             <label className="campo">
-              Fecha lÃ­mite para enviar evidencia
+              Fecha límite para enviar evidencia
               <input type="datetime-local" value={datos.fechaLimite} onChange={cambiar('fechaLimite')} required />
             </label>
 
@@ -213,7 +213,7 @@ export default function AdminActividadFormulario() {
             </label>
 
             <label className="campo">
-              Cupo (vacÃ­o = sin lÃ­mite)
+              Cupo (vacío = sin límite)
               <input type="number" value={datos.cupo} onChange={cambiar('cupo')} min={1} max={100000} />
             </label>
           </>
@@ -223,7 +223,7 @@ export default function AdminActividadFormulario() {
         {error && <p className="aviso aviso-error">{error}</p>}
 
         <button type="submit" className="boton" disabled={guardando}>
-          {guardando ? 'Guardandoâ€¦' : esNuevo ? `Crear ${etiquetaTipo} (borrador)` : 'Guardar cambios'}
+          {guardando ? 'Guardando…' : esNuevo ? `Crear ${etiquetaTipo} (borrador)` : 'Guardar cambios'}
         </button>
       </form>
     </section>
